@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "bunker 2-0"
+version = "0.1.0"
+description = ""
+authors = ["Ecpopov <ecpopov@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "bunker 2"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.108.0"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.24"}
+asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+pydantic-settings = "^2.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+pytest = "^7.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
