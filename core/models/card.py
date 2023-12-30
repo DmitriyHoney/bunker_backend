@@ -24,7 +24,8 @@ class CardCategoryEnum(StrEnum):
 class Card(Base):
     name: Mapped[str] = mapped_column(String(128), unique=True)
     description: Mapped[str]
-    category: Mapped[str] = mapped_column(CardCategoryEnum)
+    category: Mapped[str] = mapped_column(CardCategoryEnum, nullable=False)
+    effect: Mapped[float] = mapped_column(default=0.5)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
