@@ -7,7 +7,6 @@ from .base import Base
 
 
 class CardSpecification(Base):
-
     name: Mapped[str] = mapped_column(String(128), unique=True)
     description: Mapped[str]
     card_id: Mapped[id] = mapped_column(ForeignKey("cards.id"))

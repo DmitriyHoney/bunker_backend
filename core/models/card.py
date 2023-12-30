@@ -8,17 +8,17 @@ from .base import Base
 
 
 class CardCategoryEnum(StrEnum):
-    health = 'health'
-    profession = 'profession'
-    phobia = 'phobia'
-    hobby = 'hobby'
-    luggage = 'luggage'
-    quality = 'quality'
-    special = 'special'
-    biology = 'biology'
-    skill = 'skill'
-    bunker = 'bunker'
-    disaster = 'disaster'
+    health = "health"
+    profession = "profession"
+    phobia = "phobia"
+    hobby = "hobby"
+    luggage = "luggage"
+    quality = "quality"
+    special = "special"
+    biology = "biology"
+    skill = "skill"
+    bunker = "bunker"
+    disaster = "disaster"
 
 
 class Card(Base):
