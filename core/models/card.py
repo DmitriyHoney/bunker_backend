@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 
-class CardCategoryEnum(StrEnum):
+class CardCategoryEnum(Enum):
     health = "health"
     profession = "profession"
     phobia = "phobia"
@@ -24,7 +24,7 @@ class CardCategoryEnum(StrEnum):
 class Card(Base):
     name: Mapped[str] = mapped_column(String(128), unique=True)
     description: Mapped[str]
-    category: Mapped[str] = mapped_column(CardCategoryEnum, nullable=False)
+    category: Mapped[CardCategoryEnum] = mapped_column(nullable=False)
     effect: Mapped[float] = mapped_column(default=0.5)
 
     def __str__(self):

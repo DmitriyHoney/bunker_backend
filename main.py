@@ -1,8 +1,21 @@
 from typing import Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
+
+from api.cards.views import router as cards_router
+from ws.views import router as ws_router
 
 app = FastAPI()
+
+app.include_router(cards_router)
+app.include_router(ws_router)
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
 
 
 @app.get("/api/")
