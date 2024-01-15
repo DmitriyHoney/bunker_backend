@@ -10,15 +10,13 @@ if TYPE_CHECKING:
     from .card import Card
 
 
-class PlayerMove(Base):
-    __tablename__ = "player_moves"
-
+class Move(Base):
     round_id: Mapped[int] = mapped_column(ForeignKey("rounds.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
-    user = Mapped["User"] = relationship(back_populates="player_moves")
-    card = Mapped["Card"] = relationship(back_populates="player_moves")
+    user = Mapped["User"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
+    card = Mapped["Card"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"

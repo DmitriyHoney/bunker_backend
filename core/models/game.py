@@ -14,8 +14,11 @@ class GameStatusEnum(StrEnum):
 class Game(Base):
     name: Mapped[str] = mapped_column(String(32), unique=True)
     room_id: Mapped[id] = mapped_column(ForeignKey("rooms.id"))
-    room: Mapped[list["Room"]] = relationship(back_populates="games", lazy="selectin")
     status: Mapped[GameStatusEnum] = mapped_column(default=GameStatusEnum.playing)
+
+    room: Mapped["Room"] = relationship(back_populates="games", lazy="selectin", uselist=False)
+    desks: Mapped[list["Room"]] = relationship(back_populates="games", lazy="selectin", uselist=False)
+    rounds: Mapped[list["Round"]] = relationship(back_populates="games", lazy="selectin", uselist=False)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"

@@ -1,7 +1,7 @@
 from enum import Enum
 
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
@@ -25,6 +25,10 @@ class Card(Base):
     description: Mapped[str]
     category: Mapped[CardCategoryEnum] = mapped_column(nullable=False)
     effect: Mapped[float] = mapped_column(default=0.5)
+
+    properties: Mapped[list["CardProperty"]] = relationship(back_populates="card", uselist=True)
+    decks: Mapped[list["Deck"]] = relationship(back_populates="cards", uselist=True, secondary='card_deck')
+    moves: Mapped[list["Move"]] = relationship(back_populates="cards", uselist=True)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
