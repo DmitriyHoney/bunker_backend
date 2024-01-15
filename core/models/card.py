@@ -1,5 +1,4 @@
-import uuid
-from enum import Enum, StrEnum
+from enum import Enum
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column

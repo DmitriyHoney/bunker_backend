@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper
 from ws import manager
 from . import crud
-from .dependencies import product_by_id
+from .dependencies import card_by_id
 from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial
 
 router = APIRouter(prefix="/cards", tags=["Cards"])
@@ -28,50 +28,50 @@ async def get_cards(
     response_model=Card,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_product(
-    product_in: CardCreate,
+async def create_card(
+    card_in: CardCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_product(session=session, product_in=product_in)
+    return await crud.create_card(session=session, card_in_in=card_in)
 
 
-@router.get("/{product_id}/", response_model=Card)
-async def get_product(
-    product: Card = Depends(product_by_id),
+@router.get("/{card_id}/", response_model=Card)
+async def get_card(
+    card: Card = Depends(card_by_id),
 ):
-    return product
+    return card
 
 
-@router.put("/{product_id}/")
+@router.put("/{card_id}/")
 async def update_product(
-    product_update: CardUpdate,
-    product: Card = Depends(product_by_id),
+    card_update: CardUpdate,
+    card: Card = Depends(card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.update_product(
+    return await crud.update_card(
         session=session,
-        product=product,
-        product_update=product_update,
+        card=card,
+        card_update=card_update,
     )
 
 
-@router.patch("/{product_id}/")
-async def update_product_partial(
-    product_update: CardUpdatePartial,
-    product: Card = Depends(product_by_id),
+@router.patch("/{card_id}/")
+async def update_card_partial(
+    card_update: CardUpdatePartial,
+    card: Card = Depends(card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.update_product(
+    return await crud.update_card(
         session=session,
-        product=product,
-        product_update=product_update,
+        card=card,
+        card_update=card_update,
         partial=True,
     )
 
 
-@router.delete("/{product_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_product(
-    product: Card = Depends(product_by_id),
+@router.delete("/{card_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_card(
+    card: Card = Depends(card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> None:
-    await crud.delete_product(session=session, product=product)
+    await crud.delete_card(session=session, card=card)

@@ -37,7 +37,7 @@ async def create_card(session: AsyncSession, card_in: CardCreate) -> Card:
     card = Card(**card_in.model_dump())
     session.add(card)
     await session.commit()
-    # await session.refresh(product)
+    # await session.refresh(card)
     return card
 
 
@@ -55,7 +55,7 @@ async def update_card(
 
 async def delete_card(
     session: AsyncSession,
-    product: Card,
+    card: Card,
 ) -> None:
-    await session.delete(product)
+    await session.delete(card)
     await session.commit()
