@@ -8,47 +8,47 @@ Delete
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
+from core.models import User
+
+from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 
 
-from core.models import Game
-
-from .schemas import GameCreate, GameUpdate, GameUpdatePartial
-
-
-async def get_games(session: AsyncSession) -> list[Game]:
-    stmt = select(Game).order_by(Game.id)
+async def get_users(session: AsyncSession) -> list[User]:
+    stmt = select(User).order_by(User.id)
     result: Result = await session.execute(stmt)
     rooms = result.scalars().all()
     return list(rooms)
 
 
-async def get_game(session: AsyncSession, room_id: int) -> Game | None:
-    return await session.get(Game, room_id)
+async def get_user(session: AsyncSession, room_id: int) -> User | None:
+    return await session.get(User, room_id)
 
 
-async def create_game(session: AsyncSession, user_in: GameCreate) -> Game:
-    room = Game(**user_in.model_dump())
+async def create_user(session: AsyncSession, user_in: UserCreate) -> User:
+    room = User(**user_in.model_dump())
     session.add(room)
     await session.commit()
     # await session.refresh(room)
     return room
 
 
-async def update_game(
+async def update_user(
     session: AsyncSession,
-    room: Game,
-    room_update: GameUpdate | GameUpdatePartial,
+    room: User,
+    room_update: UserUpdate | UserUpdatePartial,
     partial: bool = False,
-) -> Game:
+) -> User:
     for name, value in room_update.model_dump(exclude_unset=partial).items():
         setattr(room, name, value)
     await session.commit()
     return room
 
 
-async def delete_game(
+async def delete_user(
     session: AsyncSession,
-    room: Game,
+    room: User,
 ) -> None:
     await session.delete(room)
     await session.commit()

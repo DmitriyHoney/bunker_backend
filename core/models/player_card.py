@@ -4,8 +4,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 
-class PlayerSession(Base):
-    game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
+class CardSet(Base):
+    session_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     cards: Mapped[list[int]] = mapped_column(ForeignKey("cards.id"))
 

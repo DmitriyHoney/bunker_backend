@@ -1,27 +1,25 @@
+import uuid
+from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict
 
 
-class ProductBase(BaseModel):
+class GameBase(BaseModel):
     name: str
-    description: str
-    price: int
 
 
-class ProductCreate(ProductBase):
+class GameCreate(GameBase):
+    room_id: int
+
+
+class GameUpdate(GameCreate):
     pass
 
 
-class ProductUpdate(ProductCreate):
-    pass
-
-
-class ProductUpdatePartial(ProductCreate):
+class GameUpdatePartial(GameCreate):
     name: str | None = None
-    description: str | None = None
-    price: int | None = None
 
 
-class Product(ProductBase):
+class Game(GameBase):
     model_config = ConfigDict(from_attributes=True)
-
     id: int
