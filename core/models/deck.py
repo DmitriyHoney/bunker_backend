@@ -15,7 +15,8 @@ class Deck(Base):
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    cards: Mapped[list["Card"]] = relationship(secondary="card_deck", uselist=True, lazy="selectin", back_populates="decks")
+    cards: Mapped[list["Card"]] = relationship(secondary="card_deck", uselist=True, lazy="selectin",
+                                               back_populates="decks")
     user: Mapped["Card"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
     game: Mapped["Game"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
 

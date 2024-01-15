@@ -14,9 +14,9 @@ class User(Base):
         UUID(as_uuid=True), unique=True, default=uuid.uuid4
     )
     room: Mapped["Room"] = relationship(back_populates="users", lazy="selectin", uselist=False)
-    games: Mapped[list["Game"]] = relationship(back_populates="users", lazy="selectin", uselist=True)
-    moves: Mapped[list["Move"]] = relationship(back_populates="users", lazy="selectin", uselist=True)
-    votes: Mapped[list["Vote"]] = relationship(back_populates="users", lazy="selectin", uselist=True)
+    games: Mapped[list["Game"]] = relationship(back_populates="user", lazy="selectin", uselist=True)
+    moves: Mapped[list["Move"]] = relationship(back_populates="user", lazy="selectin", uselist=True)
+    votes: Mapped[list["Vote"]] = relationship(back_populates="user", lazy="selectin", uselist=True)
     exclude_votes: Mapped[list["Vote"]] = relationship(back_populates="exclude_user", lazy="selectin", uselist=True)
 
 

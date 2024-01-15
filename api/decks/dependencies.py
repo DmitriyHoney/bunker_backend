@@ -8,15 +8,15 @@ from core.models import db_helper, Room
 from . import crud
 
 
-async def get_game_by_id(
-    game_id: Annotated[int, Path],
+async def get_deck_by_id(
+    deck_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Room:
-    game = await crud.get_game(session=session, game_id=game_id)
-    if game is not None:
-        return game
+    deck = await crud.get_deck(session=session, deck_id=deck_id)
+    if deck is not None:
+        return deck
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product {game_id} not found!",
+        detail=f"Product {deck_id} not found!",
     )

@@ -15,8 +15,9 @@ class Move(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
-    user = Mapped["User"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
-    card = Mapped["Card"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
+    user: Mapped["User"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
+    card: Mapped["Card"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
+    round: Mapped["Round"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"

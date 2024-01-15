@@ -1,5 +1,5 @@
 import uuid
-from enum import StrEnum
+from enum import Enum
 
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -7,14 +7,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 
 
-class CardApplyEnum(StrEnum):
+class CardApplyEnum(Enum):
     none = "none"
     all = "all"
     self = "self"
     one = "one"
 
 
-class CardEffectEnum(StrEnum):
+class CardEffectEnum(Enum):
     none = "none"
 
 
@@ -23,8 +23,8 @@ class CardProperty(Base):
     value: Mapped[str] = mapped_column(String(128), unique=False)
     description: Mapped[str]
     card_id: Mapped[id] = mapped_column(ForeignKey("cards.id"))
-    apply: Mapped[str] = mapped_column(CardApplyEnum, nullable=False, default=CardApplyEnum.none)
-    effect: Mapped[str] = mapped_column( CardEffectEnum, nullable=False, default=CardEffectEnum.none)
+    apply: Mapped[CardApplyEnum] = mapped_column(nullable=False, default=CardApplyEnum.none)
+    effect: Mapped[CardEffectEnum] = mapped_column(nullable=False, default=CardEffectEnum.none)
 
     card: Mapped["Card"] = relationship(back_populates="properties", lazy="selectin", uselist=False)
 

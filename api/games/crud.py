@@ -22,33 +22,33 @@ async def get_games(session: AsyncSession) -> list[Game]:
     return list(rooms)
 
 
-async def get_game(session: AsyncSession, room_id: int) -> Game | None:
-    return await session.get(Game, room_id)
+async def get_game(session: AsyncSession, game_id: int) -> Game | None:
+    return await session.get(Game, game_id)
 
 
-async def create_game(session: AsyncSession, user_in: GameCreate) -> Game:
-    room = Game(**user_in.model_dump())
-    session.add(room)
+async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
+    game = Game(**game_in.model_dump())
+    session.add(game)
     await session.commit()
     # await session.refresh(room)
-    return room
+    return game
 
 
 async def update_game(
     session: AsyncSession,
-    room: Game,
-    room_update: GameUpdate | GameUpdatePartial,
+    game: Game,
+    game_update: GameUpdate | GameUpdatePartial,
     partial: bool = False,
 ) -> Game:
-    for name, value in room_update.model_dump(exclude_unset=partial).items():
-        setattr(room, name, value)
+    for name, value in game_update.model_dump(exclude_unset=partial).items():
+        setattr(game, name, value)
     await session.commit()
-    return room
+    return game
 
 
 async def delete_game(
     session: AsyncSession,
-    room: Game,
+    game: Game,
 ) -> None:
-    await session.delete(room)
+    await session.delete(game)
     await session.commit()

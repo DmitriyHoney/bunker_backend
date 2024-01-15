@@ -43,7 +43,7 @@ async def get_card(
 
 
 @router.put("/{card_id}/")
-async def update_product(
+async def update_card(
     card_update: CardUpdate,
     card: Card = Depends(card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
