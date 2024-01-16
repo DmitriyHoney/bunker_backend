@@ -5,6 +5,7 @@ __all__ = (
     "User",
     "Room",
     "Game",
+    "GameStatusEnum",
     "Card",
     "CardCategoryEnum",
     "Deck",
@@ -19,7 +20,7 @@ from .base import Base
 from .db_helper import DatabaseHelper, db_helper
 from .user import User
 from .room import Room
-from .game import Game
+from .game import Game, GameStatusEnum
 from .card import Card, CardCategoryEnum
 from .card_property import CardProperty
 from .deck import Deck
