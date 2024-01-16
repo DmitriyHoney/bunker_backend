@@ -7,14 +7,12 @@ Delete
 from builtins import len
 
 from ..cards.crud import get_random_cards_deck
-from ..decks.crud import create_deck
-
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.models import Game, Deck
+from core.models import Game, Deck, Round
 
 from .schemas import GameCreate, GameUpdate, GameUpdatePartial
 from ..decks.schemas import DeckCreate
@@ -29,6 +27,17 @@ async def get_games(session: AsyncSession) -> list[Game]:
 
 async def get_game(session: AsyncSession, game_id: int) -> Game | None:
     return await session.get(Game, game_id)
+
+
+async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
+    rounds = []
+    for i in range(9):
+        round = Round(name=f"round_{i + 1}")
+        round.game = game
+        session.add(round)
+        rounds.append(round)
+    await session.commit()
+    return rounds
 
 
 async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
@@ -46,6 +55,11 @@ async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
         deck.user = user
         deck.cards = random_decks[i]
         session.add(deck)
+
+    create_rounds(game)
+
+    for i in range(9):
+        round = Round(name=f"round_{i + 1}")
 
     await session.commit()
 
@@ -70,3 +84,5 @@ async def delete_game(
 ) -> None:
     await session.delete(game)
     await session.commit()
+
+
