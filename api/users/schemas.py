@@ -25,3 +25,7 @@ class User(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
     uid: uuid.UUID
+    # room: object | None
+    # moves: list | None
+    # votes: list | None
+    # exclude_votes: list | None

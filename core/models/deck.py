@@ -17,7 +17,7 @@ class Deck(Base):
 
     cards: Mapped[list["Card"]] = relationship(secondary="card_deck", uselist=True, lazy="selectin",
                                                back_populates="decks")
-    user: Mapped["Card"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
+    user: Mapped["User"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
     game: Mapped["Game"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
 
     def __str__(self):

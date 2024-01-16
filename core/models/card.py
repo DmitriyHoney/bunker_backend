@@ -28,7 +28,7 @@ class Card(Base):
 
     properties: Mapped[list["CardProperty"]] = relationship(back_populates="card", uselist=True)
     decks: Mapped[list["Deck"]] = relationship(back_populates="cards", uselist=True, secondary='card_deck')
-    moves: Mapped[list["Move"]] = relationship(back_populates="cards", uselist=True)
+    moves: Mapped[list["Move"]] = relationship(back_populates="card", uselist=True)
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
