@@ -38,16 +38,14 @@ async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
     await session.refresh(game)
 
     users = game.room.users
-    random_decks = get_random_cards_deck(session=session, limit=len(users))
+    random_decks = await get_random_cards_deck(session=session, limit=len(users))
 
-    for user in game.room.users:
-        deck = Deck(game_id=game.id, )
+    for i, user in enumerate(game.room.users):
+        deck = Deck()
+        deck.game = game
+        deck.user = user
+        deck.cards = random_decks[i]
         session.add(deck)
-
-        await session.commit()
-        deck = create_deck(session=session, )
-
-    print(game.room.users)
 
     await session.commit()
 

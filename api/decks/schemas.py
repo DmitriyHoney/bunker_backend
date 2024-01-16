@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class DeckBase(BaseModel):
-    name: str
+    pass
 
 
 class DeckCreate(DeckBase):
@@ -21,3 +21,4 @@ class DeckUpdatePartial(DeckCreate):
 class Deck(DeckBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+

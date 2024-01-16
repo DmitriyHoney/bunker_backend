@@ -13,7 +13,7 @@ class GameStatusEnum(StrEnum):
 
 class Game(Base):
     name: Mapped[str] = mapped_column(String(32), unique=True)
-    room_id: Mapped[id] = mapped_column(ForeignKey("rooms.id"))
+    room_id: Mapped[id] = mapped_column(ForeignKey("rooms.id", ondelete="all, delete"))
     status: Mapped[GameStatusEnum] = mapped_column(default=GameStatusEnum.playing)
 
     room: Mapped["Room"] = relationship(back_populates="games", lazy="selectin", uselist=False)
