@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper
+from core.models import db_helper, CardCategoryEnum
 from ws import manager
 from . import crud
 from .dependencies import card_by_id
-from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial
+from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial, CardSet
 
 router = APIRouter(prefix="/cards", tags=["Cards"])
 
@@ -23,6 +23,16 @@ async def get_cards(
     return []
 
 
+@router.get("/random", response_model=list[list[Card]])
+async def get_random_cards(
+        limit: int,
+        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await crud.get_random_cards_deck(session, limit=limit)
+
+    #return await crud.get_random_cards(session, card_category=CardCategoryEnum.health, limit=limit)
+
+
 @router.post(
     "/",
     response_model=Card,
@@ -32,7 +42,7 @@ async def create_card(
     card_in: CardCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_card(session=session, card_in_in=card_in)
+    return await crud.create_card(session=session, card_in=card_in)
 
 
 @router.get("/{card_id}/", response_model=Card)

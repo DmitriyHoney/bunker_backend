@@ -20,10 +20,13 @@ class CardCategoryEnum(Enum):
     disaster = "disaster"
 
 
+card_categories = [category.name for category in CardCategoryEnum] + [CardCategoryEnum.special]
+
+
 class Card(Base):
     name: Mapped[str] = mapped_column(String(128), unique=True)
     description: Mapped[str]
-    category: Mapped[CardCategoryEnum] = mapped_column(nullable=False)
+    category: Mapped[CardCategoryEnum] = mapped_column(nullable=False, default=CardCategoryEnum.special)
     effect: Mapped[float] = mapped_column(default=0.5)
 
     properties: Mapped[list["CardProperty"]] = relationship(back_populates="card", uselist=True)

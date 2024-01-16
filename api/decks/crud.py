@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from core.models import Deck
+from core.models.card import card_categories
 
 from .schemas import DeckCreate, DeckUpdate, DeckUpdatePartial
 
@@ -29,6 +30,7 @@ async def get_deck(session: AsyncSession, deck_id: int) -> Deck | None:
 async def create_deck(session: AsyncSession, deck_in: DeckCreate) -> Deck:
     deck = Deck(**deck_in.model_dump())
     session.add(deck)
+
     await session.commit()
     # await session.refresh(room)
     return deck

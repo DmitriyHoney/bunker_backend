@@ -4,15 +4,20 @@ Read
 Update
 Delete
 """
+from builtins import len
+
+from ..cards.crud import get_random_cards_deck
+from ..decks.crud import create_deck
 
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.models import Game
+from core.models import Game, Deck
 
 from .schemas import GameCreate, GameUpdate, GameUpdatePartial
+from ..decks.schemas import DeckCreate
 
 
 async def get_games(session: AsyncSession) -> list[Game]:
@@ -29,8 +34,23 @@ async def get_game(session: AsyncSession, game_id: int) -> Game | None:
 async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
     game = Game(**game_in.model_dump())
     session.add(game)
+    await session.flush()
+    await session.refresh(game)
+
+    users = game.room.users
+    random_decks = get_random_cards_deck(session=session, limit=len(users))
+
+    for user in game.room.users:
+        deck = Deck(game_id=game.id, )
+        session.add(deck)
+
+        await session.commit()
+        deck = create_deck(session=session, )
+
+    print(game.room.users)
+
     await session.commit()
-    # await session.refresh(room)
+
     return game
 
 

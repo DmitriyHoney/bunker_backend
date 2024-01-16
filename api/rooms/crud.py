@@ -41,8 +41,12 @@ async def get_room_by_user(session: AsyncSession, user_id: int) -> Room | None:
 
 
 async def create_room(session: AsyncSession, room_in: RoomCreate) -> Room:
-    room = Room(**room_in.model_dump())
-    owner = User(is_owner=True, username=uuid.uuid4().hex)
+
+    request_data = room_in.model_dump()
+    owner_username = request_data.pop("username")
+
+    room = Room(**request_data)
+    owner = User(is_owner=True, username=owner_username)
     room.users.append(owner)
     session.add(room)
     await session.commit()
