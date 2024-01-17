@@ -24,6 +24,14 @@ async def create_deck(
     return await crud.create_deck(session=session, deck_in=deck_in)
 
 
+@router.post("/distribute/", response_model=Deck, status_code=status.HTTP_201_CREATED)
+async def distribute_deck(
+    deck_in: DeckCreate,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await crud.create_decks(session=session, deck_in=deck_in)
+
+
 @router.get("/{deck_id}/", response_model=Deck)
 async def get_deck(
     deck: Deck = Depends(get_deck_by_id),

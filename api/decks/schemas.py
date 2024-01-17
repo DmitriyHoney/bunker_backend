@@ -9,7 +9,7 @@ class DeckBase(BaseModel):
 
 
 class DeckCreate(DeckBase):
-    room_id: int
+    game_id: int
 
 
 class DeckUpdate(DeckCreate):
