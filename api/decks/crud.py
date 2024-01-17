@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from core.models import Deck
-from core.models.card import card_categories
+from core.models.card import card_user_categories
 
 from .schemas import DeckCreate, DeckUpdate, DeckUpdatePartial
 from ..cards.crud import get_random_cards_deck

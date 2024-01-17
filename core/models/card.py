@@ -20,7 +20,8 @@ class CardCategoryEnum(Enum):
     disaster = "disaster"
 
 
-card_categories = [category.name for category in CardCategoryEnum] + [CardCategoryEnum.special]
+card_user_categories = [category.name for category in CardCategoryEnum if category.name
+                        not in [CardCategoryEnum.disaster, CardCategoryEnum.bunker]] + [CardCategoryEnum.special]
 
 
 class Card(Base):

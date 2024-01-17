@@ -43,23 +43,23 @@ async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
 async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
     game = Game(**game_in.model_dump())
     session.add(game)
-    await session.flush()
-    await session.refresh(game)
-
-    users = game.room.users
-    random_decks = await get_random_cards_deck(session=session, limit=len(users))
-
-    for i, user in enumerate(game.room.users):
-        deck = Deck()
-        deck.game = game
-        deck.user = user
-        deck.cards = random_decks[i]
-        session.add(deck)
-
-    create_rounds(game)
-
-    for i in range(9):
-        round = Round(name=f"round_{i + 1}")
+    # await session.flush()
+    # await session.refresh(game)
+    #
+    # users = game.room.users
+    # random_decks = await get_random_cards_deck(session=session, limit=len(users))
+    #
+    # for i, user in enumerate(game.room.users):
+    #     deck = Deck()
+    #     deck.game = game
+    #     deck.user = user
+    #     deck.cards = random_decks[i]
+    #     session.add(deck)
+    #
+    # create_rounds(game)
+    #
+    # for i in range(9):
+    #     round = Round(name=f"round_{i + 1}")
 
     await session.commit()
 

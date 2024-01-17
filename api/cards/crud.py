@@ -10,7 +10,7 @@ from sqlalchemy import select, func
 from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Card, CardCategoryEnum
-from core.models.card import card_categories
+from core.models.card import card_user_categories
 
 from .schemas import CardCreate, CardUpdate, CardUpdatePartial, CardSet
 
@@ -39,7 +39,7 @@ async def get_random_cards(session: AsyncSession,
 
 async def get_random_cards_deck(session: AsyncSession, limit: int) -> list[list[Card]]:
     decks = [list() for _ in range(limit)]
-    for category in card_categories:
+    for category in card_user_categories:
         cards = await get_random_cards(session=session, card_category=category, limit=limit)
 
         print(cards)
