@@ -43,14 +43,12 @@ async def create_moves(session: AsyncSession, move_in: MovesCreate) -> list[Roun
     for r in game.rounds:
         if r.number % 2 != 0:
             users = users.reverse()
-
         moves = []
         for u in users:
             move = Move()
             move.user = u
             move.round = r
             moves.append(move)
-
         r.moves = moves
 
     await session.commit()
