@@ -12,7 +12,7 @@ class CardDeck(Base):
 
 
 class Deck(Base):
-    game_id: Mapped[int] = mapped_column(ForeignKey("games.id", ondelete='all, delete'))
+    game_id: Mapped[int] = mapped_column(ForeignKey("games.id", ondelete='CASCADE'))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     cards: Mapped[list["Card"]] = relationship(secondary="card_deck", uselist=True, lazy="selectin",

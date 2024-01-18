@@ -10,9 +10,10 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.models import Move
+from core.models import Move, User, Round
 
 from .schemas import MovesCreate, MoveUpdate, MoveUpdatePartial
+from ..games.crud import get_game
 
 
 async def get_moves(session: AsyncSession) -> list[Move]:
@@ -32,6 +33,29 @@ async def create_move(session: AsyncSession, move_in: MovesCreate) -> Move:
     await session.commit()
     # await session.refresh(room)
     return move
+
+
+async def create_moves(session: AsyncSession, move_in: MovesCreate) -> list[Round]:
+
+    game = await get_game(session, move_in.game_id)
+    users = game.room.users
+
+    for r in game.rounds:
+        if r.number % 2 != 0:
+            users = users.reverse()
+
+        moves = []
+        for u in users:
+            move = Move()
+            move.user = u
+            move.round = r
+            moves.append(move)
+
+        r.moves = moves
+
+    await session.commit()
+    await session.refresh(game.rounds)
+    return game.rounds
 
 
 async def update_move(

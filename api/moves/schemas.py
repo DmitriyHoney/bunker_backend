@@ -5,11 +5,11 @@ from pydantic import BaseModel, ConfigDict
 
 
 class MovesBase(BaseModel):
-    name: str
+    pass
 
 
 class MovesCreate(MovesBase):
-    room_id: int
+    game_id: int
 
 
 class MoveUpdate(MovesCreate):

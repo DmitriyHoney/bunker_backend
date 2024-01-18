@@ -1,4 +1,5 @@
 import uuid
+from enum import Enum
 
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -6,10 +7,17 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 
 
-class Round(Base):
+class RoundStateEnum(Enum):
+    waiting = "waiting"
+    playing = "playing"
+    played = "played"
 
+
+class Round(Base):
     name: Mapped[str] = mapped_column(String(32), unique=True)
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
+    state: Mapped[RoundStateEnum] = mapped_column(nullable=False, default=RoundStateEnum.waiting)
+    number: Mapped[int]
 
     game: Mapped["Game"] = relationship(back_populates="rounds", lazy="selectin", uselist=False)
     polls: Mapped[list["Poll"]] = relationship(back_populates="round", lazy="selectin", uselist=True)
