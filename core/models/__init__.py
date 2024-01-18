@@ -8,13 +8,13 @@ __all__ = (
     "GameStatusEnum",
     "Card",
     "CardCategoryEnum",
+    "RoundStateEnum",
     "Deck",
     "Move",
     "CardProperty",
     "Poll",
     "Vote",
-    "Round",
-    "RoundStatusEnum",
+    "Round"
 )
 
 from .base import Base
@@ -28,4 +28,4 @@ from .deck import Deck
 from .move import Move
 from .poll import Poll
 from .vote import Vote
-from .round import Round, RoundStatusEnum
+from .round import Round, RoundStateEnum

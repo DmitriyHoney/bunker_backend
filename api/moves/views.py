@@ -18,6 +18,14 @@ async def get_moves(
     return await crud.get_moves(session=session)
 
 
+@router.get("/init", response_model=list[Move])
+async def init_moves(
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    move_in=MovesCreate
+):
+    return await crud.create_moves(session=session, move_in=move_in)
+
+
 @router.post("/", response_model=Move, status_code=status.HTTP_201_CREATED)
 async def create_moves(
     move_in: MovesCreate,

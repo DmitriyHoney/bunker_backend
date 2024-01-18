@@ -6,9 +6,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
-if TYPE_CHECKING:
-    from .user import User
-    from .card import Card
+# if TYPE_CHECKING:
+#     from .user import User
+#     from .card import Card
+#
 
 
 class Move(Base):
