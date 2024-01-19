@@ -14,7 +14,7 @@ class RoundStateEnum(Enum):
 
 
 class Round(Base):
-    name: Mapped[str] = mapped_column(String(32), unique=True)
+    name: Mapped[str] = mapped_column(String(32))
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     state: Mapped[RoundStateEnum] = mapped_column(nullable=False, default=RoundStateEnum.waiting)
     number: Mapped[int]

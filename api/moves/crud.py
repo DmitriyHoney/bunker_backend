@@ -35,9 +35,9 @@ async def create_move(session: AsyncSession, move_in: MovesCreate) -> Move:
     return move
 
 
-async def create_moves(session: AsyncSession, move_in: MovesCreate) -> list[Round]:
+async def create_moves(session: AsyncSession, game_id: int) -> list[Move]:
+    game = await get_game(session, game_id)
 
-    game = await get_game(session, move_in.game_id)
     users = game.room.users
 
     for r in game.rounds:

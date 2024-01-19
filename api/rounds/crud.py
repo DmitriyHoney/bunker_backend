@@ -4,13 +4,15 @@ Read
 Update
 Delete
 """
+import datetime
+import uuid
 
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Game, Round
-from .schemas import RoundCreate, RoundUpdate, RoundUpdatePartial
+from core.models import Game, Round, RoundStateEnum, Move
+from .schemas import RoundUpdate, RoundUpdatePartial
 
 
 async def get_rounds(session: AsyncSession) -> list[Game]:
@@ -34,15 +36,34 @@ async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
     await session.commit()
     return rounds
 
-async def create_rounds(session: AsyncSession, round_in: RoundCreate) -> list[Round]:
+
+async def create_rounds(session: AsyncSession, game_id: int) -> list[Round]:
     all_rounds = []
+    game = await get_game(session, game_id)
+    users = game.room.users
+
     for i in range(8):
-        round_name = f"Раунд {i + 1}"
-        all_rounds.append(Round(name=round_name, **round_in.model_dump()))
+        round_name = f"{uuid.uuid4().hex}"
+        if i + 1 % 2 != 0:
+            users = list(reversed(users))
+        moves = []
+        for y, u in enumerate(users):
+            move = Move(user=u)
+            if y == 0 and i == 0:
+                move.expired_date = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
+            moves.append(move)
+
+        all_rounds.append(Round(
+            name=round_name,
+            number=i + 1,
+            state=RoundStateEnum.playing if i == 0 else RoundStateEnum.waiting,
+            game=game,
+            moves=moves
+        ))
+
     session.add_all(all_rounds)
     await session.commit()
     return all_rounds
-
 
 
 async def update_game(

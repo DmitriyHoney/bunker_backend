@@ -20,10 +20,10 @@ async def get_rounds(
 
 @router.post("/", response_model=list[Round], status_code=status.HTTP_201_CREATED)
 async def create_rounds(
-    round_in: RoundCreate,
+    game_id: int,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_rounds(session=session, round_in=round_in)
+    return await crud.create_rounds(session=session, game_id=game_id)
 
 
 @router.put("/{game_id}/")
