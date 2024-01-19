@@ -16,7 +16,7 @@ class Game(Base):
     room_id: Mapped[id] = mapped_column(ForeignKey("rooms.id", ondelete="CASCADE"))
     status: Mapped[GameStatusEnum] = mapped_column(default=GameStatusEnum.playing)
 
-    room: Mapped["Room"] = relationship(back_populates="games", lazy="selectin", uselist=False)
+    room: Mapped["Room"] = relationship(back_populates="games", lazy="subquery", uselist=False)
     decks: Mapped[list["Deck"]] = relationship(back_populates="game", lazy="selectin", uselist=True)
     rounds: Mapped[list["Round"]] = relationship(back_populates="game", lazy="selectin", uselist=True)
 

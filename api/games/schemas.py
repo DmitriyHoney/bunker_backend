@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 class GameBase(BaseModel):
     name: str
-    status: str
+
 
 
 class GameCreate(GameBase):
@@ -14,10 +14,10 @@ class GameCreate(GameBase):
 
 
 class GameUpdate(GameCreate):
-    pass
+    status: str
 
 
-class GameUpdatePartial(GameCreate):
+class GameUpdatePartial(GameUpdate):
     name: str | None = None
 
 
@@ -29,4 +29,5 @@ class GameRoom(BaseModel):
 class Game(GameBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    status: str
     room: GameRoom

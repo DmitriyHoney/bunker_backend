@@ -6,13 +6,14 @@ Delete
 """
 from builtins import len
 
+from core import exceptions
 from ..cards.crud import get_random_cards_deck
-from sqlalchemy import select
+from sqlalchemy import select, exists
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.models import Game, Deck, Round
+from core.models import Game, Deck, Round, GameStatusEnum
 
 from .schemas import GameCreate, GameUpdate, GameUpdatePartial
 from ..decks.schemas import DeckCreate
@@ -29,20 +30,18 @@ async def get_game(session: AsyncSession, game_id: int) -> Game | None:
     return await session.get(Game, game_id)
 
 
-async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
-    rounds = []
-    for i in range(9):
-        round = Round(name=f"round_{i + 1}")
-        round.game = game
-        session.add(round)
-        rounds.append(round)
-    await session.commit()
-    return rounds
-
-
 async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
-    game = Game(**game_in.model_dump())
+
+    query = exists(Game).where(Game.room_id == game_in.room_id, Game.status == GameStatusEnum.playing).select()
+    games_exists = await session.scalar(query)
+
+    if games_exists:
+        raise exceptions.ApiException(detail="Активные игры уже существуют")
+
+
+    game = Game(status=GameStatusEnum.playing, **game_in.model_dump())
     session.add(game)
+
     # await session.flush()
     # await session.refresh(game)
     #
@@ -62,7 +61,7 @@ async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
     #     round = Round(name=f"round_{i + 1}")
 
     await session.commit()
-
+    await session.refresh(game)
     return game
 
 

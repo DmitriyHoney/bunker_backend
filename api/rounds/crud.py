@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.exceptions import ApiException
 from core.models import Game, Round, RoundStateEnum, Move
 from .schemas import RoundUpdate, RoundUpdatePartial
 
@@ -40,10 +41,14 @@ async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
 async def create_rounds(session: AsyncSession, game_id: int) -> list[Round]:
     all_rounds = []
     game = await get_game(session, game_id)
+
+    if not hasattr(game, 'room'):
+        raise ApiException(status_code=400, detail="Room is nor Found")
+
     users = game.room.users
 
     for i in range(8):
-        round_name = f"{uuid.uuid4().hex}"
+        round_name = f"Раунд {i + 1}"
         if i + 1 % 2 != 0:
             users = list(reversed(users))
         moves = []

@@ -1,9 +1,15 @@
-from typing import Union
+from typing import Union, Annotated, Any, Optional, Dict
 
 from fastapi import FastAPI, WebSocket
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
+from starlette import status
 
 from api.cards.views import router as cards_router
+from core.exceptions import ApiException
 from ws.views import router as ws_router
+
+from fastapi.exceptions import HTTPException
 
 from api.rooms.views import router as rooms_router
 from api.users.views import router as users_router
@@ -22,6 +28,18 @@ app.include_router(cards_router)
 app.include_router(rounds_router)
 
 app.include_router(ws_router)
+
+
+
+@app.exception_handler(ApiException)
+def api_exceptions_handler(request: Request, exc: ApiException):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={
+            "status": "Error",
+            "detail": exc.detail,
+        })
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
