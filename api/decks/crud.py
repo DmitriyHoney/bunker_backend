@@ -29,6 +29,10 @@ async def get_deck(session: AsyncSession, deck_id: int) -> Deck | None:
     return await session.get(Deck, deck_id)
 
 
+async def get_deck_by_game_user(session: AsyncSession, game_id: int, user_id: int) -> Deck | None:
+    return await session.scalar(select(Deck).where(Deck.user_id == user_id, Deck.game_id == game_id))
+
+
 async def create_deck(session: AsyncSession, deck_in: DeckCreate) -> Deck:
     deck = Deck(**deck_in.model_dump())
     session.add(deck)

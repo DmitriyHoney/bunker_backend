@@ -6,25 +6,25 @@ Delete
 """
 
 from sqlalchemy import select
-from sqlalchemy.engine import Result
+from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload, joinedload
 
-
-from core.models import Move, User, Round
+from core.models import Move, User, Round, Card, CardProperty
 
 from .schemas import MovesCreate, MoveUpdate, MoveUpdatePartial
 from ..games.crud import get_game
 
 
 async def get_moves(session: AsyncSession) -> list[Move]:
-    stmt = select(Move).order_by(Move.id)
-    result: Result = await session.execute(stmt)
-    moves = result.scalars().all()
-    return list(moves)
+    stmt = select(Move).options(joinedload(Move.card).selectinload(Card.properties)).order_by(Move.id)
+    result: ScalarResult = await session.scalars(stmt)
+    return result.all()
 
 
 async def get_move(session: AsyncSession, move_id: int) -> Move | None:
-    return await session.get(Move, move_id)
+    result = select(Move).where(Move.id == move_id).options(joinedload(Move.card).selectinload(Card.properties))
+    return await session.scalar(result)
 
 
 async def create_move(session: AsyncSession, move_in: MovesCreate) -> Move:
@@ -64,6 +64,16 @@ async def update_move(
 ) -> Move:
     for name, value in move_update.model_dump(exclude_unset=partial).items():
         setattr(move, name, value)
+    await session.commit()
+    return move
+
+
+async def add_card_to_move(
+    session: AsyncSession,
+    move: Move,
+    card: Card,
+) -> Move:
+    setattr(move, "card", card)
     await session.commit()
     return move
 

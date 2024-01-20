@@ -23,7 +23,7 @@ class Move(Base):
     round: Mapped["Round"] = relationship(back_populates="moves", lazy="selectin", uselist=False)
 
     def __str__(self):
-        return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
+        return f"{self.__class__.__name__}(id={self.id}, name={self.user_id!r})"
 
     def __repr__(self):
         return str(self)

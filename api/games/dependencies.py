@@ -20,3 +20,4 @@ async def get_game_by_id(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Product {game_id} not found!",
     )
+

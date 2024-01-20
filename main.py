@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from starlette import status
 
 from api.cards.views import router as cards_router
-from core.exceptions import ApiException
+from core.exceptions import APIException
 from ws.views import router as ws_router
 
 from fastapi.exceptions import HTTPException
@@ -31,8 +31,8 @@ app.include_router(ws_router)
 
 
 
-@app.exception_handler(ApiException)
-def api_exceptions_handler(request: Request, exc: ApiException):
+@app.exception_handler(APIException)
+def api_exceptions_handler(request: Request, exc: APIException):
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content={

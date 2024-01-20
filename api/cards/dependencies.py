@@ -8,7 +8,7 @@ from core.models import db_helper, Card
 from . import crud
 
 
-async def card_by_id(
+async def get_card_by_id(
     card_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Card:

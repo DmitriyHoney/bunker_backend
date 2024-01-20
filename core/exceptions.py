@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from fastapi import status
 
 
-class ApiException(HTTPException):
+class APIException(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_400_BAD_REQUEST,

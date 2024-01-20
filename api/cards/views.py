@@ -1,11 +1,12 @@
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper, CardCategoryEnum
+from core.models import db_helper, CardCategoryEnum, Move
 from ws import manager
 from . import crud
-from .dependencies import card_by_id
+from .dependencies import get_card_by_id
 from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial, CardSet
+from ..moves.dependencies import get_move_by_id
 
 router = APIRouter(prefix="/cards", tags=["Cards"])
 
@@ -45,9 +46,24 @@ async def create_card(
     return await crud.create_card(session=session, card_in=card_in)
 
 
+@router.post(
+    "/use",
+    response_model=Card,
+    status_code=status.HTTP_201_CREATED,
+)
+async def use_card(
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    move: Move = Depends(get_move_by_id),
+    card: Card = Depends(get_card_by_id),
+):
+    move.card_id = card
+    return await crud.create_card(session=session, card_in=card_in)
+
+
+
 @router.get("/{card_id}/", response_model=Card)
 async def get_card(
-    card: Card = Depends(card_by_id),
+    card: Card = Depends(get_card_by_id),
 ):
     return card
 
@@ -55,7 +71,7 @@ async def get_card(
 @router.put("/{card_id}/")
 async def update_card(
     card_update: CardUpdate,
-    card: Card = Depends(card_by_id),
+    card: Card = Depends(get_card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_card(
@@ -68,7 +84,7 @@ async def update_card(
 @router.patch("/{card_id}/")
 async def update_card_partial(
     card_update: CardUpdatePartial,
-    card: Card = Depends(card_by_id),
+    card: Card = Depends(get_card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_card(
@@ -81,7 +97,7 @@ async def update_card_partial(
 
 @router.delete("/{card_id}/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_card(
-    card: Card = Depends(card_by_id),
+    card: Card = Depends(get_card_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> None:
     await crud.delete_card(session=session, card=card)

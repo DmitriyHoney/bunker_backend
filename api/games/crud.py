@@ -36,7 +36,7 @@ async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
     games_exists = await session.scalar(query)
 
     if games_exists:
-        raise exceptions.ApiException(detail="Активные игры уже существуют")
+        raise exceptions.APIException(detail="Активные игры уже существуют")
 
 
     game = Game(status=GameStatusEnum.playing, **game_in.model_dump())

@@ -11,7 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import ApiException
+from core.exceptions import APIException
 from core.models import Game, Round, RoundStateEnum, Move
 from .schemas import RoundUpdate, RoundUpdatePartial
 
@@ -43,7 +43,7 @@ async def create_rounds(session: AsyncSession, game_id: int) -> list[Round]:
     game = await get_game(session, game_id)
 
     if not hasattr(game, 'room'):
-        raise ApiException(status_code=400, detail="Room is nor Found")
+        raise APIException(status_code=400, detail="Room is nor Found")
 
     users = game.room.users
 
