@@ -1,15 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core import exceptions
 from core.models import db_helper, Card, Move
 from . import crud
 from .dependencies import get_move_by_id
 
 from .schemas import MoveResponse, MovesCreate, MoveUpdate, MoveUpdatePartial
+from .sevices import remove_card_in_deck
 from ..cards.dependencies import get_card_by_id
-from ..decks.crud import get_deck_by_game_user
-from ..rooms.dependencies import get_room_by_id
+
 
 router = APIRouter(prefix="/moves", tags=["Moves"])
 
@@ -43,22 +42,7 @@ async def make_move(
     move: Move = Depends(get_move_by_id),
     card: Card = Depends(get_card_by_id),
 ):
-
-    if move.card:
-        raise exceptions.APIException(detail="Ход уже сделан")
-
-    deck = await get_deck_by_game_user(
-        session=session,
-        user_id=move.user.id,
-        game_id=move.round and move.round.game.id
-    )
-
-    if card not in deck.cards:
-        raise exceptions.APIException(detail="Карты нет в колоде игорока")
-    deck.cards.remove(card)
-
-    session.commit()
-
+    await remove_card_in_deck(session=session, move=move, card=card)
     return await crud.add_card_to_move(session=session, move=move, card=card)
 
 
