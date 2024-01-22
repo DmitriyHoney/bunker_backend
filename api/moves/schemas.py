@@ -7,19 +7,19 @@ from core.models import CardCategoryEnum
 from core.models.card_property import CardApplyEnum, CardEffectEnum
 
 
-class MovesBase(BaseModel):
+class MoveBase(BaseModel):
     pass
 
 
-class MovesCreate(MovesBase):
+class MoveCreate(MoveBase):
     game_id: int
 
 
-class MoveUpdate(MovesCreate):
+class MoveUpdate(MoveCreate):
     pass
 
 
-class MoveUpdatePartial(MovesCreate):
+class MoveUpdatePartial(MoveCreate):
     name: str | None = None
 
 
@@ -39,7 +39,7 @@ class MoveCard(BaseModel):
     properties: list[MoveCardProperty] = []
 
 
-class MoveResponse(MovesBase):
+class MoveResponse(MoveBase):
     id: int
     card: MoveCard | None
 

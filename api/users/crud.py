@@ -22,8 +22,8 @@ async def get_users(session: AsyncSession) -> list[User]:
     return list(rooms)
 
 
-async def get_user(session: AsyncSession, room_id: int) -> User | None:
-    return await session.get(User, room_id)
+async def get_user(session: AsyncSession, user_id: int) -> User | None:
+    return await session.get(User, user_id)
 
 
 async def create_user(session: AsyncSession, user_in: UserCreate) -> User:

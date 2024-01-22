@@ -4,6 +4,8 @@ from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).parent.parent
 
+print(BASE_DIR)
+
 
 class DbSettings(BaseModel):
     url: str = "postgresql+asyncpg://postgres:123@localhost/bunker"
@@ -22,8 +24,7 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
 
     db: DbSettings = DbSettings()
-
-    # auth_jwt: AuthJWT = AuthJWT()
+    auth_jwt: AuthJWT = AuthJWT()
 
     # db_echo: bool = True
 

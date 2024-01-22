@@ -5,7 +5,7 @@ from core.models import db_helper, Card, Move
 from . import crud
 from .dependencies import get_move_by_id
 
-from .schemas import MoveResponse, MovesCreate, MoveUpdate, MoveUpdatePartial
+from .schemas import MoveResponse, MoveCreate, MoveUpdate, MoveUpdatePartial
 from .sevices import remove_card_in_deck
 from ..cards.dependencies import get_card_by_id
 
@@ -23,14 +23,14 @@ async def get_moves(
 @router.get("/init", response_model=list[MoveResponse])
 async def init_moves(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    move_in=MovesCreate
+    move_in=MoveCreate
 ):
     return await crud.create_moves(session=session, move_in=move_in)
 
 
 @router.post("/", response_model=MoveResponse, status_code=status.HTTP_201_CREATED)
 async def create_moves(
-    move_in: MovesCreate,
+    move_in: MoveCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.create_move(session=session, move_in=move_in)

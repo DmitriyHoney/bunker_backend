@@ -11,6 +11,7 @@ from ws.views import router as ws_router
 
 from fastapi.exceptions import HTTPException
 
+from api.auth.views import router as auth_router
 from api.rooms.views import router as rooms_router
 from api.users.views import router as users_router
 from api.games.views import router as games_router
@@ -19,6 +20,7 @@ from api.moves.views import router as moves_router
 from api.rounds.views import router as rounds_router
 
 app = FastAPI()
+app.include_router(auth_router)
 app.include_router(rooms_router)
 app.include_router(users_router)
 app.include_router(games_router)

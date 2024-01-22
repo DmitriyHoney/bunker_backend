@@ -6,6 +6,7 @@ from . import crud
 from .dependencies import get_game_by_id
 
 from .schemas import Game, GameCreate, GameUpdate, GameUpdatePartial
+from ..auth.utils import get_auth_user
 from ..rooms.dependencies import get_room_by_id
 
 router = APIRouter(prefix="/games", tags=["Games"])
@@ -13,7 +14,8 @@ router = APIRouter(prefix="/games", tags=["Games"])
 
 @router.get("/", response_model=list[Game])
 async def get_rooms(
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        auth_user=Depends(get_auth_user),
+        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.get_games(session=session)
 

@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload, joinedload
 
 from core.models import Move, User, Round, Card, CardProperty
 
-from .schemas import MovesCreate, MoveUpdate, MoveUpdatePartial
+from .schemas import MoveCreate, MoveUpdate, MoveUpdatePartial
 from ..games.crud import get_game
 
 
@@ -27,7 +27,7 @@ async def get_move(session: AsyncSession, move_id: int) -> Move | None:
     return await session.scalar(result)
 
 
-async def create_move(session: AsyncSession, move_in: MovesCreate) -> Move:
+async def create_move(session: AsyncSession, move_in: MoveCreate) -> Move:
     move = Move(**move_in.model_dump())
     session.add(move)
     await session.commit()
