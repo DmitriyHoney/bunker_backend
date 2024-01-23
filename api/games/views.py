@@ -1,22 +1,26 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper
+from auth.utils import get_auth_user
+from core.models import db_helper, User
 from . import crud
 from .dependencies import get_game_by_id
 
 from .schemas import Game, GameCreate, GameUpdate, GameUpdatePartial
-from ..auth.utils import get_auth_user
-from ..rooms.dependencies import get_room_by_id
+from ..users.dependencies import CurrentUser
 
 router = APIRouter(prefix="/games", tags=["Games"])
 
 
 @router.get("/", response_model=list[Game])
 async def get_rooms(
-        auth_user=Depends(get_auth_user),
+        user: CurrentUser,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+
+    print("//////////////////", user)
     return await crud.get_games(session=session)
 
 

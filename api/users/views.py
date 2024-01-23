@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
 from .dependencies import get_user_by_id
-from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial
+from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial, UserCreateResponse
+from auth.schemas import Token
+from auth.utils import encode_jwt
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -16,12 +18,19 @@ async def get_users(
     return await crud.get_users(session=session)
 
 
-@router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_in: UserCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_user(session=session, user_in=user_in)
+    user = await crud.create_user(session=session, user_in=user_in)
+    access = encode_jwt(payload={
+        "sub": user.id,
+        "room": user_in.room_id
+    })
+    token = Token(access=access)
+    user.token = token
+    return user
 
 
 @router.get("/{user_id}/", response_model=User)

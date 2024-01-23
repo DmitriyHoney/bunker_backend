@@ -5,14 +5,18 @@ from core.models import db_helper
 from . import crud
 from .dependencies import get_room_by_id
 from .schemas import Room, RoomCreate, RoomUpdate, RoomUpdatePartial
+from ..users.dependencies import CurrentUser
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
 
 @router.get("/", response_model=list[Room])
 async def get_rooms(
+    user: CurrentUser,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    print("dfsdfsdfsf")
+    print(user)
     return await crud.get_rooms(session=session)
 
 

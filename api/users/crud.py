@@ -8,11 +8,13 @@ Delete
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+
 
 from core.models import User
 
 from .schemas import UserCreate, UserUpdate, UserUpdatePartial
+
+
 
 
 async def get_users(session: AsyncSession) -> list[User]:
@@ -27,11 +29,11 @@ async def get_user(session: AsyncSession, user_id: int) -> User | None:
 
 
 async def create_user(session: AsyncSession, user_in: UserCreate) -> User:
-    room = User(**user_in.model_dump())
-    session.add(room)
+    user = User(**user_in.model_dump())
+
+    session.add(user)
     await session.commit()
-    # await session.refresh(room)
-    return room
+    return user
 
 
 async def update_user(

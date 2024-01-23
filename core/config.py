@@ -9,7 +9,7 @@ print(BASE_DIR)
 
 class DbSettings(BaseModel):
     url: str = "postgresql+asyncpg://postgres:123@localhost/bunker"
-    echo: bool = True
+    echo: bool = False
 
 
 class AuthJWT(BaseModel):

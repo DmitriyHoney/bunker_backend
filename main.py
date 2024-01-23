@@ -1,17 +1,15 @@
-from typing import Union, Annotated, Any, Optional, Dict
-
 from fastapi import FastAPI, WebSocket
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
-from starlette import status
+from fastapi import status
+from fastapi.middleware import Middleware
 
 from api.cards.views import router as cards_router
 from core.exceptions import APIException
+from middlewares import CustomHeaderMiddleware
 from ws.views import router as ws_router
 
-from fastapi.exceptions import HTTPException
-
-from api.auth.views import router as auth_router
+from auth.views import router as auth_router
 from api.rooms.views import router as rooms_router
 from api.users.views import router as users_router
 from api.games.views import router as games_router
@@ -19,7 +17,7 @@ from api.decks.views import router as decks_router
 from api.moves.views import router as moves_router
 from api.rounds.views import router as rounds_router
 
-app = FastAPI()
+app = FastAPI(middleware=[Middleware(CustomHeaderMiddleware)])
 app.include_router(auth_router)
 app.include_router(rooms_router)
 app.include_router(users_router)
@@ -30,7 +28,6 @@ app.include_router(cards_router)
 app.include_router(rounds_router)
 
 app.include_router(ws_router)
-
 
 
 @app.exception_handler(APIException)

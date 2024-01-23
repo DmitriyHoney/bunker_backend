@@ -1,8 +1,4 @@
-import uuid
-from uuid import UUID
-
 from pydantic import BaseModel, ConfigDict
-
 from core.models import CardCategoryEnum
 from core.models.card_property import CardApplyEnum, CardEffectEnum
 

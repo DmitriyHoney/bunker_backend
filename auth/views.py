@@ -19,7 +19,7 @@ async def get_users(
     }
 
     access = encode_jwt(payload=jwt_payload)
-    token = Token(access=access, refresh=access)
+    token = Token(access=access)
     return token
 
 

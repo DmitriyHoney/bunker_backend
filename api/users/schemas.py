@@ -1,7 +1,8 @@
 import uuid
-from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
+
+from auth.schemas import Token
 
 
 class UserBase(BaseModel):
@@ -29,3 +30,11 @@ class User(UserBase):
     # moves: list | None
     # votes: list | None
     # exclude_votes: list | None
+
+
+class UserCreateResponse(User):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    uid: uuid.UUID
+    token: Token
+
