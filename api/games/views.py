@@ -3,13 +3,13 @@ from typing import Annotated
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.utils import get_auth_user
+from auth.dependencies import CurrentUser
 from core.models import db_helper, User
+from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_game_by_id
 
 from .schemas import Game, GameCreate, GameUpdate, GameUpdatePartial
-from ..users.dependencies import CurrentUser
 
 router = APIRouter(prefix="/games", tags=["Games"])
 
@@ -17,17 +17,15 @@ router = APIRouter(prefix="/games", tags=["Games"])
 @router.get("/", response_model=list[Game])
 async def get_rooms(
         user: CurrentUser,
-        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        session: DbSession,
 ):
-
-    print("//////////////////", user)
-    return await crud.get_games(session=session)
+    return await crud.get_games(session=session, user=user)
 
 
 @router.post("/", response_model=Game, status_code=status.HTTP_201_CREATED)
 async def create_games(
     game_in: GameCreate,
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    session: DbSession,
 ):
     return await crud.create_game(session=session, game_in=game_in)
 
@@ -41,9 +39,9 @@ async def get_game(
 
 @router.put("/{game_id}/")
 async def update_game(
+    session: DbSession,
     game_update: GameUpdate,
     game: Game = Depends(get_game_by_id),
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_game(
         session=session,

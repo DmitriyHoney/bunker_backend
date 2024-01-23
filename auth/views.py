@@ -14,7 +14,7 @@ async def get_users(
 ):
 
     jwt_payload = {
-        "sub": 1,
+        "sub": 3,
         "game": "1"
     }
 

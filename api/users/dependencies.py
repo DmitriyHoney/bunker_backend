@@ -23,4 +23,4 @@ async def get_user_by_id(
     )
 
 
-CurrentUser = Annotated[User | None, Depends(get_auth_user)]
+
