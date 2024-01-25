@@ -19,7 +19,7 @@ async def get_rooms(
         user: CurrentUser,
         session: DbSession,
 ):
-    return await crud.get_games(session=session, user=user)
+    return await crud.get_games(session=session, user_id=user.id)
 
 
 @router.post("/", response_model=Game, status_code=status.HTTP_201_CREATED)

@@ -2,30 +2,28 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.authentification import OAuth2Bearer
-from auth.dependencies import CurrentUser
+from auth.dependencies import CurrentUser, Auth
 from auth.utils import get_auth_user
 from core.models import db_helper
+from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_room_by_id
 from .schemas import Room, RoomCreate, RoomUpdate, RoomUpdatePartial
 
-aut = OAuth2Bearer()
 
-router = APIRouter(prefix="/rooms", tags=["Rooms"], dependencies=[Depends(get_auth_user)])
+router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
 
 @router.get("/", response_model=list[Room])
 async def get_rooms(
     request: Request,
-    user: OAuth2Bearer = Depends(aut),
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    auth_: Auth,
+    session: DbSession,
 
 ):
-
-    print(user)
+    print("//", auth_)
     print(request.user)
-    return await crud.get_rooms(session=session)
+    return await crud.get_rooms(session=session, user_id=request.user.id)
 
 
 @router.post("/", response_model=Room, status_code=status.HTTP_201_CREATED)

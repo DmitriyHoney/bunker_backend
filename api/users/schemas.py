@@ -11,7 +11,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    room_id: int
+    room_uid: uuid.UUID
 
 
 class UserUpdate(UserCreate):
@@ -37,4 +37,8 @@ class UserCreateResponse(User):
     id: int
     uid: uuid.UUID
     token: Token
+
+
+
+
 

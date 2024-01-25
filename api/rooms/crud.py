@@ -7,7 +7,7 @@ Delete
 import uuid
 
 from sqlalchemy import select
-from sqlalchemy.engine import Result
+from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -16,11 +16,14 @@ from core.models import Room, User
 from .schemas import RoomCreate, RoomUpdate, RoomUpdatePartial
 
 
-async def get_rooms(session: AsyncSession) -> list[Room]:
-    stmt = select(Room).order_by(Room.id)
-    result: Result = await session.execute(stmt)
-    rooms = result.scalars().all()
-    return list(rooms)
+async def get_rooms(session: AsyncSession, user_id: int | None) -> list[Room]:
+    query = select(Room).order_by(Room.id)
+    if user_id is not None:
+        query = query.join(User).where(User.id == user_id)
+
+    result: ScalarResult = await session.scalars(query)
+    #rooms = result.scalars().all()
+    return result.all()
 
 
 async def get_room(session: AsyncSession, room_id: int) -> Room | None:
@@ -31,13 +34,15 @@ async def get_room_by_user(session: AsyncSession, user_id: int) -> Room | None:
 
     print("ddddddddddddddd", user_id)
 
-    stmt = select(Room).where(Room.users.and_(User.id == user_id))
+    #stmt = select(Room).where(Room.users.and_(User.id == user_id))
 
-    print(stmt)
+    query = select(Room).join(User).filter(User.id == user_id)
 
-    result = await session.execute(stmt)
+    print(query)
 
-    return result.scalars().one()
+    #result = await session.execute(stmt)
+
+    return await session.scalar(query)
 
 
 async def create_room(session: AsyncSession, room_in: RoomCreate) -> Room:

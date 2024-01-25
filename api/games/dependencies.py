@@ -21,15 +21,3 @@ async def get_game_by_id(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"Product {game_id} not found!",
     )
-
-
-class AuthFilter:
-    def __init__(self, user=CurrentUser):
-        self.user = user
-
-    def filter_queryset(self, queryset: Any):
-        if not self.user:
-            return queryset
-
-
-auth_filter = AuthFilter()

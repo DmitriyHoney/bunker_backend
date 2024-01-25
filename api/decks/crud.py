@@ -9,7 +9,6 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
 from core.models import Deck
 from core.models.card import card_user_categories
 
@@ -66,10 +65,10 @@ async def create_decks(session: AsyncSession, deck_in: DeckCreate) -> list[Deck]
 
 
 async def update_deck(
-    session: AsyncSession,
-    deck: Deck,
-    deck_update: DeckUpdate | DeckUpdatePartial,
-    partial: bool = False,
+        session: AsyncSession,
+        deck: Deck,
+        deck_update: DeckUpdate | DeckUpdatePartial,
+        partial: bool = False,
 ) -> Deck:
     for name, value in deck_update.model_dump(exclude_unset=partial).items():
         setattr(deck, name, value)
@@ -78,8 +77,8 @@ async def update_deck(
 
 
 async def delete_deck(
-    session: AsyncSession,
-    deck: Deck,
+        session: AsyncSession,
+        deck: Deck,
 ) -> None:
     await session.delete(deck)
     await session.commit()

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .dependencies import get_deck_by_id
+from .dependencies import get_deck_by_id, get_deck_by_room_id
 from .schemas import Deck, DeckCreate, DeckUpdate, DeckUpdatePartial
 
 router = APIRouter(prefix="/decks", tags=["Decks"])
@@ -35,6 +35,13 @@ async def distribute_deck(
 @router.get("/{deck_id}/", response_model=Deck)
 async def get_deck(
     deck: Deck = Depends(get_deck_by_id),
+):
+    return deck
+
+
+@router.get("/me", response_model=Deck)
+async def get_user_deck(
+    deck: Deck = Depends(get_deck_by_room_id),
 ):
     return deck
 
