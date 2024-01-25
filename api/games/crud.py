@@ -5,14 +5,14 @@ Update
 Delete
 """
 
-from sqlalchemy import select, exists, ScalarResult
-from sqlalchemy.engine import Result
+from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.dependencies import CurrentUser
 from core import exceptions
+from core.config import settings
 from core.models import Game, GameStatusEnum, User, Room
 from .schemas import GameCreate, GameUpdate, GameUpdatePartial
+from ..rooms.crud import get_room
 
 
 async def get_games(session: AsyncSession, user_id: int | None) -> list[Game]:
@@ -31,6 +31,16 @@ async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:
 
     query = exists(Game).where(Game.room_id == game_in.room_id, Game.status == GameStatusEnum.playing).select()
     games_exists = await session.scalar(query)
+    game = await get_room(session=session, room_id=game_in.room_id)
+
+    if game is None:
+        raise exceptions.APIException(detail=f"Комнаты с ID {game_in.room_id} не существует")
+
+    if len(game.users) > settings.game.gamers_max_count:
+        raise exceptions.APIException(detail=f"Максимальное количество игроков {settings.game.gamers_max_count}")
+
+    if len(game.users) < settings.game.gamers_min_count:
+        raise exceptions.APIException(detail=f"Минимальное количество игроков {settings.game.gamers_min_count}")
 
     if games_exists:
         raise exceptions.APIException(detail="Активные игры в комнате уже существуют")

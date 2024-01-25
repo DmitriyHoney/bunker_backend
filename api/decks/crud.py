@@ -9,7 +9,9 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Deck
+from core.config import settings
+from core.exceptions import APIException
+from core.models import Deck, GameStatusEnum
 from core.models.card import card_user_categories
 
 from .schemas import DeckCreate, DeckUpdate, DeckUpdatePartial
@@ -43,25 +45,29 @@ async def create_deck(session: AsyncSession, deck_in: DeckCreate) -> Deck:
 
 async def create_decks(session: AsyncSession, deck_in: DeckCreate) -> list[Deck]:
     game = await get_game(session, **deck_in.model_dump())
-    if not game:
-        pass
 
-    users = game.room.users
+    if not game:
+        raise APIException(detail=f"Игры ID {deck_in.game_id} не существует")
+
+    if game.status == GameStatusEnum.completed:
+        raise APIException(detail=f"Игра ID {deck_in.game_id} завершена")
+
+    users = game.room and game.room.users
     random_decks = await get_random_cards_deck(session=session, limit=len(users))
+
+    if all(True for i in random_decks if len(i) == settings.game.rounds_count):
+        raise APIException(detail="Колоды игроков не укомплектованы")
 
     all_deck = []
 
-    for i, user in enumerate(game.room.users):
-        deck = Deck()
-        deck.game = game
-        deck.user = user
+    for i, user in enumerate(users):
+        deck = Deck(game=game, user=user)
         deck.cards = random_decks[i]
         all_deck.append(deck)
 
     session.add_all(all_deck)
     await session.commit()
-    # await session.refresh(room)
-    return deck
+    return all_deck
 
 
 async def update_deck(

@@ -31,17 +31,7 @@ async def get_room(session: AsyncSession, room_id: int) -> Room | None:
 
 
 async def get_room_by_user(session: AsyncSession, user_id: int) -> Room | None:
-
-    print("ddddddddddddddd", user_id)
-
-    #stmt = select(Room).where(Room.users.and_(User.id == user_id))
-
     query = select(Room).join(User).filter(User.id == user_id)
-
-    print(query)
-
-    #result = await session.execute(stmt)
-
     return await session.scalar(query)
 
 
@@ -49,7 +39,6 @@ async def create_room(session: AsyncSession, room_in: RoomCreate) -> Room:
 
     request_data = room_in.model_dump()
     owner_username = request_data.pop("username")
-
     room = Room(**request_data)
     owner = User(is_owner=True, username=owner_username)
     room.users.append(owner)

@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 from api.users.schemas import User
+from core.models import GameStatusEnum
 
 
 class RoomBase(BaseModel):
@@ -23,8 +24,22 @@ class RoomUpdatePartial(RoomCreate):
     name: str | None = None
 
 
+class RoomUser(BaseModel):
+    id: int
+    uid: uuid.UUID
+    username: str
+    is_owner: bool
+
+
+class RoomGame(BaseModel):
+    id: int
+    name: str
+    status: GameStatusEnum
+
+
 class Room(RoomBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
     uid: uuid.UUID
-    users: list[User] = []
+    users: list[RoomUser] = []
+    games: list[RoomGame] = []

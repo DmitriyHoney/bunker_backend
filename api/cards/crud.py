@@ -41,12 +41,8 @@ async def get_random_cards_deck(session: AsyncSession, limit: int) -> list[list[
     decks = [list() for _ in range(limit)]
     for category in card_user_categories:
         cards = await get_random_cards(session=session, card_category=category, limit=limit)
-
-        print(cards)
-
         for i, card in enumerate(cards):
             decks[i].append(card)
-    print(decks)
     return decks
 
 

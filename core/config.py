@@ -20,12 +20,18 @@ class AuthJWT(BaseModel):
     # access_token_expire_minutes: int = 3
 
 
+class GameSettings(BaseModel):
+    gamers_max_count: int = 16
+    gamers_min_count: int = 6
+    rounds_count: int = 8
+
+
 class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
 
     db: DbSettings = DbSettings()
     auth_jwt: AuthJWT = AuthJWT()
-
+    game: GameSettings = GameSettings()
     # db_echo: bool = True
 
 

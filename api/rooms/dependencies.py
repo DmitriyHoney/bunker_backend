@@ -12,11 +12,11 @@ async def get_room_by_id(
     room_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Room:
-    product = await crud.get_room(session=session, product_id=room_id)
-    if product is not None:
-        return product
+    room = await crud.get_room(session=session, room_id=room_id)
+    if room is not None:
+        return room
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product {room_id} not found!",
+        detail=f"Room {room_id} not found!",
     )

@@ -1,9 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Request
-from fastapi.security import HTTPBearer
+from fastapi import APIRouter, status, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.dependencies import CurrentUser, Auth
-from auth.utils import get_auth_user
+from api.auth.dependencies import Auth
 from core.models import db_helper
 from core.models.dependencies import DbSession
 from . import crud

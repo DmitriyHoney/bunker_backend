@@ -1,7 +1,4 @@
-import base64
-import binascii
-
-from fastapi import FastAPI, WebSocket, Depends
+from fastapi import FastAPI, WebSocket
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi import status
@@ -13,7 +10,7 @@ from core.exceptions import APIException
 from middlewares import CustomHeaderMiddleware
 from ws.views import router as ws_router
 
-from auth.views import router as auth_router
+from api.auth.views import router as auth_router
 from api.rooms.views import router as rooms_router
 from api.users.views import router as users_router
 from api.games.views import router as games_router

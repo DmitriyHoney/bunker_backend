@@ -5,8 +5,8 @@ from core.models import db_helper
 from . import crud
 from .dependencies import get_user_by_id
 from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial, UserCreateResponse
-from auth.schemas import Token
-from auth.utils import encode_jwt
+from api.auth.schemas import Token
+from api.auth.utils import encode_jwt
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

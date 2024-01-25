@@ -21,7 +21,7 @@ class Deck(Base):
     game: Mapped["Game"] = relationship(back_populates="decks", lazy="selectin", uselist=False)
 
     def __str__(self):
-        return f"{self.__class__.__name__}(id={self.id}, name={self.user_id!r})"
+        return f"{self.__class__.__name__}(id={self.id}, game_id={self.game_id!r},  user_id={self.user_id!r})"
 
     def __repr__(self):
         return str(self)

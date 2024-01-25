@@ -2,7 +2,7 @@ import uuid
 
 from pydantic import BaseModel, ConfigDict
 
-from auth.schemas import Token
+from api.auth.schemas import Token
 
 
 class UserBase(BaseModel):
@@ -11,7 +11,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    room_uid: uuid.UUID
+    room_id: int
 
 
 class UserUpdate(UserCreate):

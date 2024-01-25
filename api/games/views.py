@@ -1,10 +1,8 @@
-from typing import Annotated
-
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.dependencies import CurrentUser
-from core.models import db_helper, User
+from api.auth.dependencies import CurrentUser
+from core.models import db_helper
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_game_by_id

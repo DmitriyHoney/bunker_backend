@@ -1,9 +1,8 @@
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import Path, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.dependencies import CurrentUser
 from core.models import db_helper, Game
 
 from . import crud
