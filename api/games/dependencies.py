@@ -8,6 +8,10 @@ from core.models import db_helper, Game
 from . import crud
 
 
+async def query_parameters():
+    return None
+
+
 async def get_game_by_id(
         game_id: Annotated[int, Path],
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),

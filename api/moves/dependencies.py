@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Path, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import exceptions
 from core.models import db_helper, Move
 
 from . import crud
@@ -16,7 +17,7 @@ async def get_move_by_id(
     if move is not None:
         return move
 
-    raise HTTPException(
+    raise exceptions.APIException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product {move_id} not found!",
+        detail=f"Ход {move_id} не найден!",
     )

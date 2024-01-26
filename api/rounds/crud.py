@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import exceptions
 from core.exceptions import APIException
 from core.models import Game, Round, RoundStateEnum, Move
 from .schemas import RoundUpdate, RoundUpdatePartial
@@ -27,23 +28,15 @@ async def get_game(session: AsyncSession, game_id: int) -> Game | None:
     return await session.get(Game, game_id)
 
 
-async def create_rounds(session: AsyncSession, game: Game) -> list[Round]:
-    rounds = []
-    for i in range(9):
-        round = Round(name=f"round_{i + 1}")
-        round.game = game
-        session.add(round)
-        rounds.append(round)
-    await session.commit()
-    return rounds
-
-
 async def create_rounds(session: AsyncSession, game_id: int) -> list[Round]:
     all_rounds = []
     game = await get_game(session, game_id)
 
+    if len(game.rounds):
+        raise exceptions.APIException(detail=f"Игра {game.id} уже содержит раунды")
+
     if not hasattr(game, 'room'):
-        raise APIException(status_code=400, detail="Room is nor Found")
+        raise APIException(detail="Комната не найдена")
 
     users = game.room.users
 

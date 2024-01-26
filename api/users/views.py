@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
@@ -6,15 +6,19 @@ from . import crud
 from .dependencies import get_user_by_id
 from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial, UserCreateResponse
 from api.auth.schemas import Token
-from api.auth.utils import encode_jwt
+from api.auth.utils import encode_jwt, http_bearer
+from ..auth.dependencies import Auth
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("/", response_model=list[User])
 async def get_users(
+    request: Request,
+    auth: Auth,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    print(auth)
     return await crud.get_users(session=session)
 
 

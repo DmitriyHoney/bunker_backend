@@ -1,11 +1,21 @@
 from typing import Annotated
 
-from fastapi import Path, Depends, HTTPException, status
+from fastapi import Path, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper, Game
 
 from . import crud
+from .schemas import RoundsFilterModel
+
+
+async def rounds_filters(
+    game_id: int | None = None
+):
+    return {'game_id': game_id}
+
+
+RoundsFilterParams = Annotated[dict, Depends(rounds_filters)]
 
 
 async def get_game_by_id(

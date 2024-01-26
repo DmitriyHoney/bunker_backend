@@ -1,12 +1,15 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core import exceptions
 from core.models import db_helper, Card, Move
+from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_move_by_id
 
 from .schemas import MoveResponse, MoveCreate, MoveUpdate, MoveUpdatePartial
-from .sevices import remove_card_in_deck
+from .sevices import remove_card_in_deck, make_move_card
+from ..auth.dependencies import Auth
 from ..cards.dependencies import get_card_by_id
 
 
@@ -20,12 +23,12 @@ async def get_moves(
     return await crud.get_moves(session=session)
 
 
-@router.get("/init", response_model=list[MoveResponse])
-async def init_moves(
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    move_in=MoveCreate
-):
-    return await crud.create_moves(session=session, move_in=move_in)
+# @router.get("/init", response_model=list[MoveResponse])
+# async def init_moves(
+#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+#     move_in=MoveCreate
+# ):
+#     return await crud.create_moves(session=session, move_in=move_in)
 
 
 @router.post("/", response_model=MoveResponse, status_code=status.HTTP_201_CREATED)
@@ -38,12 +41,20 @@ async def create_moves(
 
 @router.post("/make", response_model=MoveResponse, status_code=status.HTTP_201_CREATED)
 async def make_move(
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    session: DbSession,
+    auth: Auth,
+    request: Request,
     move: Move = Depends(get_move_by_id),
     card: Card = Depends(get_card_by_id),
 ):
-    await remove_card_in_deck(session=session, move=move, card=card)
-    return await crud.add_card_to_move(session=session, move=move, card=card)
+
+    print(move)
+    print(card)
+
+    ("ddddddddddddd", auth)
+    if request.user and not move.user == request.user:
+        exceptions.APIException(detail=f"Ход не может сделать игрок {request.user.id}")
+    return await make_move_card(session=session, move=move, card=card, user=request.user)
 
 
 @router.get("/{move_id}/", response_model=MoveResponse)

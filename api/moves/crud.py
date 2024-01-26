@@ -73,6 +73,7 @@ async def add_card_to_move(
     move: Move,
     card: Card,
 ) -> Move:
+
     setattr(move, "card", card)
     await session.commit()
     return move

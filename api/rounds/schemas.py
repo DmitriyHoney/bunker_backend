@@ -1,10 +1,16 @@
 import uuid
 from datetime import datetime
+from typing import Annotated
 from uuid import UUID
 
+from fastapi import Query
 from pydantic import BaseModel, ConfigDict
 
 from core.models import RoundStateEnum, GameStatusEnum
+
+
+class RoundsFilterModel(BaseModel):
+    game_id: int | None = None
 
 
 class RoundBase(BaseModel):

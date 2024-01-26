@@ -4,9 +4,12 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
 
-class GameBase(BaseModel):
+class GamesQueryParameters(BaseModel):
     name: str
 
+
+class GameBase(BaseModel):
+    name: str
 
 
 class GameCreate(GameBase):

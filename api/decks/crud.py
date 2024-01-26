@@ -27,6 +27,9 @@ async def get_decks(session: AsyncSession) -> list[Deck]:
 
 
 async def get_deck(session: AsyncSession, deck_id: int) -> Deck | None:
+
+    select(Deck).filt()
+
     return await session.get(Deck, deck_id)
 
 
@@ -55,8 +58,8 @@ async def create_decks(session: AsyncSession, deck_in: DeckCreate) -> list[Deck]
     users = game.room and game.room.users
     random_decks = await get_random_cards_deck(session=session, limit=len(users))
 
-    if all(True for i in random_decks if len(i) == settings.game.rounds_count):
-        raise APIException(detail="Колоды игроков не укомплектованы")
+    # if all(True for i in random_decks if len(i) == settings.game.rounds_count):
+    #     raise APIException(detail="Колоды игроков не укомплектованы")
 
     all_deck = []
 

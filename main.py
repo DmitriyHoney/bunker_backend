@@ -3,10 +3,12 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi import status
 from fastapi.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
 
 from api.cards.views import router as cards_router
 
 from core.exceptions import APIException
+from core.middlewares import BearerTokenAuthBackend
 from middlewares import CustomHeaderMiddleware
 from ws.views import router as ws_router
 
@@ -30,6 +32,8 @@ app.include_router(cards_router)
 app.include_router(rounds_router)
 
 app.include_router(ws_router)
+
+#app.add_middleware(AuthenticationMiddleware, backend=BearerTokenAuthBackend())
 
 
 @app.exception_handler(APIException)
