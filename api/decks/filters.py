@@ -1,18 +1,19 @@
-from typing import Optional
+from typing import Optional, Annotated, List
 
-from fastapi_filter.contrib.sqlalchemy import Filter
 from pydantic import Field
-from sqlalchemy import select, Select
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.filters import Filter
 from core.models import Deck, Game
 
 
 class DeckFilter(Filter):
-    game_id: Optional[int] = Field(alias="games")
+    game_id: Annotated[Optional[int], Field(alias="game_id")] = None
+    search: Optional[int | str] = None
+    order_by: str = None
 
     class Constants(Filter.Constants):
         model = Deck
+        search_model_fields = ["game_id"]
 
     class Config:
         populate_by_name = True

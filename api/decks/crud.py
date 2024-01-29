@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
 from core.exceptions import APIException
+from core.filters import Filter
 from core.models import Deck, GameStatusEnum
 from core.models.card import card_user_categories
 
@@ -19,11 +20,13 @@ from ..cards.crud import get_random_cards_deck
 from ..games.crud import get_game
 
 
-async def get_decks(session: AsyncSession, filters: ) -> list[Deck]:
-    stmt = select(Deck).order_by(Deck.id)
-    result: Result = await session.execute(stmt)
-    rooms = result.scalars().all()
-    return list(rooms)
+async def get_decks(session: AsyncSession, filters: Filter) -> list[Deck]:
+    query = select(Deck).order_by(Deck.id)
+    query = filters.filter(query)
+    query = filters.sort(query)
+
+    print("dddddddddddddd", query)
+    return (await session.scalars(filtered_query)).all()
 
 
 async def get_deck(session: AsyncSession, deck_id: int) -> Deck | None:
