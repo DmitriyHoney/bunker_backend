@@ -19,7 +19,7 @@ from ..cards.crud import get_random_cards_deck
 from ..games.crud import get_game
 
 
-async def get_decks(session: AsyncSession) -> list[Deck]:
+async def get_decks(session: AsyncSession, filters: ) -> list[Deck]:
     stmt = select(Deck).order_by(Deck.id)
     result: Result = await session.execute(stmt)
     rooms = result.scalars().all()

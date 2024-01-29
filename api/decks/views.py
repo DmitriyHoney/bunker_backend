@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .dependencies import get_deck_by_id, get_deck_by_room_id
+from .dependencies import get_deck_by_id, get_deck_by_room_id, DeckFilterDepends
 from .schemas import Deck, DeckCreate, DeckUpdate, DeckUpdatePartial
 
 router = APIRouter(prefix="/decks", tags=["Decks"])
@@ -11,8 +11,14 @@ router = APIRouter(prefix="/decks", tags=["Decks"])
 
 @router.get("/", response_model=list[Deck])
 async def get_decks(
+    filters: DeckFilterDepends,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+
+    sss = await filters.get_products_filter(session=session)
+    print(sss)
+
+
     return await crud.get_decks(session=session)
 
 

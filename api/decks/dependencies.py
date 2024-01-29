@@ -7,12 +7,9 @@ from api.auth.dependencies import Auth
 from core.models import db_helper, Room
 
 from . import crud
+from .filters import DeckFilter
 
-
-class FilterDepends:
-    pass
-
-
+DeckFilterDepends = Annotated[DeckFilter, Depends(DeckFilter)]
 
 async def get_deck_by_id(
     deck_id: Annotated[int, Path],
@@ -21,8 +18,6 @@ async def get_deck_by_id(
     deck = await crud.get_deck(session=session, deck_id=deck_id)
     if deck is not None:
         return deck
-
-
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
