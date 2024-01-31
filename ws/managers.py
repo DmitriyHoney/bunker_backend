@@ -55,4 +55,5 @@ class ConnectionManager:
         for connection in group.members:
             await connection.send_text(message)
 
+
 manager = ConnectionManager()

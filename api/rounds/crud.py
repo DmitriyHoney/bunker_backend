@@ -5,7 +5,6 @@ Update
 Delete
 """
 import datetime
-import uuid
 
 from sqlalchemy import select
 from sqlalchemy.engine import Result
@@ -13,15 +12,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import exceptions
 from core.exceptions import APIException
+from core.filters import Filter
 from core.models import Game, Round, RoundStateEnum, Move
 from .schemas import RoundUpdate, RoundUpdatePartial
 
 
-async def get_rounds(session: AsyncSession) -> list[Game]:
-    stmt = select(Round).order_by(Round.id)
-    result: Result = await session.execute(stmt)
-    rounds = result.scalars().all()
-    return list(rounds)
+async def get_rounds(session: AsyncSession, filters: Filter) -> list[Game]:
+    query = select(Round).order_by(Round.id)
+    query = filters.filter(query)
+    if hasattr(filters, 'order_by'):
+        query = filters.sort(query)
+    result: Result = await session.execute(query)
+    return result.scalars().all()
 
 
 async def get_game(session: AsyncSession, game_id: int) -> Game | None:

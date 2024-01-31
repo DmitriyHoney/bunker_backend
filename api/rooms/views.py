@@ -6,6 +6,7 @@ from core.models import db_helper
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_room_by_id
+from .filters import RoomFilterDepends
 from .schemas import Room, RoomCreate, RoomUpdate, RoomUpdatePartial
 
 
@@ -14,6 +15,7 @@ router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
 @router.get("/", response_model=list[Room])
 async def get_rooms(
+    filters: RoomFilterDepends,
     request: Request,
     auth_: Auth,
     session: DbSession,
@@ -21,7 +23,7 @@ async def get_rooms(
 ):
     print("//", auth_)
     print(request.user)
-    return await crud.get_rooms(session=session, user_id=request.user.id)
+    return await crud.get_rooms(session=session, filters=filters, user_id=request.user.id)
 
 
 @router.post("/", response_model=Room, status_code=status.HTTP_201_CREATED)

@@ -5,6 +5,7 @@ from core.models import db_helper, CardCategoryEnum, Move
 from ws import manager
 from . import crud
 from .dependencies import get_card_by_id
+from .filters import CardFilterDepends
 from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial, CardSet
 from ..moves.dependencies import get_move_by_id
 
@@ -13,15 +14,18 @@ router = APIRouter(prefix="/cards", tags=["Cards"])
 
 @router.get("/", response_model=list[Card])
 async def get_cards(
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency)
+        filters: CardFilterDepends,
+        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     print("dddddddddddddd", manager.active_connections)
 
-    for con in manager.active_connections:
-        for mem in con.members:
-            await manager.send_personal_message("Ghbdtn", mem)
-        #return await crud.get_cards(session=session)
-    return []
+    print(filters.filtering_fields)
+
+    # for con in manager.active_connections:
+    #     for mem in con.members:
+    #         await manager.send_personal_message("Ghbdtn", mem)
+
+    return await crud.get_cards(session=session, filters=filters)
 
 
 @router.get("/random", response_model=list[list[Card]])
@@ -30,7 +34,6 @@ async def get_random_cards(
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.get_random_cards_deck(session, limit=limit)
-
     #return await crud.get_random_cards(session, card_category=CardCategoryEnum.health, limit=limit)
 
 

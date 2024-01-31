@@ -6,6 +6,7 @@ from core.models import db_helper, Card, Move
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_move_by_id
+from .filters import MoveFilterDepends
 
 from .schemas import MoveResponse, MoveCreate, MoveUpdate, MoveUpdatePartial
 from .sevices import remove_card_in_deck, make_move_card
@@ -18,9 +19,10 @@ router = APIRouter(prefix="/moves", tags=["Moves"])
 
 @router.get("/", response_model=list[MoveResponse])
 async def get_moves(
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+        filters: MoveFilterDepends,
+        session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.get_moves(session=session)
+    return await crud.get_moves(session=session, filters=filters)
 
 
 # @router.get("/init", response_model=list[MoveResponse])

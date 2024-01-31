@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper
 from . import crud
 from .dependencies import get_user_by_id
+from .filters import UserFilterDepends
 from .schemas import User, UserCreate, UserUpdate, UserUpdatePartial, UserCreateResponse
 from api.auth.schemas import Token
 from api.auth.utils import encode_jwt, http_bearer
@@ -14,12 +15,13 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/", response_model=list[User])
 async def get_users(
+    filters: UserFilterDepends,
     request: Request,
     auth: Auth,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     print(auth)
-    return await crud.get_users(session=session)
+    return await crud.get_users(session=session, filters=filters)
 
 
 @router.post("/", response_model=UserCreateResponse, status_code=status.HTTP_201_CREATED)

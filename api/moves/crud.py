@@ -10,16 +10,20 @@ from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 
+from core.filters import Filter
 from core.models import Move, User, Round, Card, CardProperty
 
 from .schemas import MoveCreate, MoveUpdate, MoveUpdatePartial
 from ..games.crud import get_game
 
 
-async def get_moves(session: AsyncSession) -> list[Move]:
-    stmt = select(Move).options(joinedload(Move.card).selectinload(Card.properties)).order_by(Move.id)
-    result: ScalarResult = await session.scalars(stmt)
-    return result.all()
+async def get_moves(session: AsyncSession, filters: Filter) -> list[Move]:
+    query = select(Move).options(joinedload(Move.card).selectinload(Card.properties)).order_by(Move.id)
+    query = filters.filter(query)
+    if hasattr(filters, 'order_by'):
+        query = filters.sort(query)
+    result: Result = await session.execute(query)
+    return result.scalars().all()
 
 
 async def get_move(session: AsyncSession, move_id: int) -> Move | None:

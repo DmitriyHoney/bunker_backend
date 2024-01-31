@@ -16,7 +16,10 @@ if sys.version_info >= (3, 10):
     UNION_TYPES.append(UnionType)
 
 
-class BaseFilterModel(BaseModel, extra="forbid"):
+class BaseFilterModel(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+
     """Abstract base filter class.
 
     Provides the interface for filtering and ordering.

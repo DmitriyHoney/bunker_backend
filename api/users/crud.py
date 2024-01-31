@@ -9,19 +9,19 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
+from core.filters import Filter
 from core.models import User
 
 from .schemas import UserCreate, UserUpdate, UserUpdatePartial
 
 
-
-
-async def get_users(session: AsyncSession) -> list[User]:
-    stmt = select(User).order_by(User.id)
-    result: Result = await session.execute(stmt)
-    rooms = result.scalars().all()
-    return list(rooms)
+async def get_users(session: AsyncSession, filters:Filter) -> list[User]:
+    query = select(User).order_by(User.id)
+    query = filters.filter(query)
+    if hasattr(filters, 'order_by'):
+        query = filters.sort(query)
+    result: Result = await session.execute(query)
+    return result.scalars().all()
 
 
 async def get_user(session: AsyncSession, user_id: int) -> User | None:

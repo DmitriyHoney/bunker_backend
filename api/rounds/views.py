@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper
 from . import crud
 from .dependencies import get_game_by_id, RoundsFilterParams
+from .filters import RoundFilterDepends
 
 from .schemas import Round, RoundCreate, RoundUpdate, RoundUpdatePartial
 from ..rooms.dependencies import get_room_by_id
@@ -15,14 +16,14 @@ router = APIRouter(prefix="/rounds", tags=["Rounds"])
 
 @router.get("/", response_model=list[Round])
 async def get_rounds(
-    filters: RoundsFilterParams,
+    filters: RoundFilterDepends,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 
 ):
 
-    print(filters.get('game_id'))
+    print(filters)
 
-    return await crud.get_rounds(session=session)
+    return await crud.get_rounds(session=session, filters=filters)
 
 
 @router.post("/", response_model=list[Round], status_code=status.HTTP_201_CREATED)

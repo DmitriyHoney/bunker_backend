@@ -1,13 +1,16 @@
-from typing import Annotated, List, Any
+from typing import Annotated, List, Any, Optional
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.params import Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.filters import Filter
+from core.filters.base_filter import with_prefix, FilterDepends
 from core.models import db_helper
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_deck_by_id, get_deck_by_room_id, DeckFilterDepends
+from .filters import DeckFilter
 from .schemas import Deck, DeckCreate, DeckUpdate, DeckUpdatePartial
 
 router = APIRouter(prefix="/decks", tags=["Decks"])
@@ -16,8 +19,9 @@ router = APIRouter(prefix="/decks", tags=["Decks"])
 @router.get("/", response_model=list[Deck])
 async def get_decks(
 
-    filters: DeckFilterDepends,
+
     session: DbSession,
+        filters: Optional[Filter] = FilterDepends(with_prefix("number_filter", DeckFilter)),
 
     lld: Annotated[List[Any], Query] = None,
 ):

@@ -12,15 +12,6 @@ from core.filters.base_filter import BaseFilterModel
 
 
 def _backward_compatible_value_for_like_and_ilike(value: str):
-    """Add % if not in value to be backward compatible.
-
-    Args:
-        value (str): The value to filter.
-
-    Returns:
-        Either the unmodified value if a percent sign is present, the value wrapped in % otherwise to preserve
-        current behavior.
-    """
     if "%" not in value:
         warn(
             "You must pass the % character explicitly to use the like and ilike operators.",
@@ -45,43 +36,8 @@ _orm_operator_transformer = {
     "not": lambda value: ("is_not", value),
     "not_in": lambda value: ("not_in", value),
 }
-"""Operators à la Django.
-
-Examples:
-    my_datetime__gte
-    count__lt
-    name__isnull
-    user_id__in
-"""
-
 
 class Filter(BaseFilterModel):
-    """Base filter for orm related filters.
-
-    All children must set:
-        ```python
-        class Constants(Filter.Constants):
-            model = MyModel
-        ```
-
-    It can handle regular field names and Django style operators.
-
-    Example:
-        ```python
-        class MyModel:
-            id: PrimaryKey()
-            name: StringField(nullable=True)
-            count: IntegerField()
-            created_at: DatetimeField()
-
-        class MyModelFilter(Filter):
-            id: Optional[int]
-            id__in: Optional[str]
-            count: Optional[int]
-            count__lte: Optional[int]
-            created_at__gt: Optional[datetime]
-            name__isnull: Optional[bool]
-    """
 
     class Direction(str, Enum):
         asc = "asc"
@@ -99,7 +55,6 @@ class Filter(BaseFilterModel):
             and isinstance(value, str)
         ):
             if not value:
-                # Empty string should return [] not ['']
                 return []
             return list(value.split(","))
         return value

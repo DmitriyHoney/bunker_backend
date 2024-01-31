@@ -9,15 +9,21 @@ from random import random
 from sqlalchemy import select, func
 from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.filters import Filter
 from core.models import Card, CardCategoryEnum
 from core.models.card import card_user_categories
 
 from .schemas import CardCreate, CardUpdate, CardUpdatePartial, CardSet
 
 
-async def get_cards(session: AsyncSession) -> list[Card]:
-    stmt = select(Card).order_by(Card.id)
-    result: Result = await session.execute(stmt)
+async def get_cards(session: AsyncSession, filters: Filter) -> list[Card]:
+    query = select(Card).order_by(Card.id)
+    query = filters.filter(query)
+    if hasattr(query, 'order_by'):
+        query = filters.sort(query)
+
+    result: Result = await session.execute(query)
     products = result.scalars().all()
     return list(products)
 

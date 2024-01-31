@@ -6,6 +6,7 @@ from core.models import db_helper
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_game_by_id
+from .filters import GameFilterDepends
 
 from .schemas import Game, GameCreate, GameUpdate, GameUpdatePartial
 
@@ -14,6 +15,7 @@ router = APIRouter(prefix="/games", tags=["Games"])
 
 @router.get("/", response_model=list[Game])
 async def get_rooms(
+        filters: GameFilterDepends,
         user: CurrentUser,
         session: DbSession,
 ):

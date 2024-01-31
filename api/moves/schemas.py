@@ -28,6 +28,7 @@ class MoveCardProperty(BaseModel):
 
 
 class MoveCard(BaseModel):
+    id: int
     name: str
     description: str
     category: CardCategoryEnum

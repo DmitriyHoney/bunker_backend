@@ -11,13 +11,20 @@ from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from core.filters import Filter
 from core.models import Room, User
 
 from .schemas import RoomCreate, RoomUpdate, RoomUpdatePartial
 
 
-async def get_rooms(session: AsyncSession, user_id: int | None) -> list[Room]:
+async def get_rooms(session: AsyncSession, filters: Filter, user_id: int | None) -> list[Room]:
     query = select(Room).order_by(Room.id)
+
+    query = filters.filter(query)
+
+    if hasattr(filters, 'order_by'):
+        query = filters.filter(query)
+
     if user_id is not None:
         query = query.join(User).where(User.id == user_id)
 

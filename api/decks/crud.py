@@ -23,10 +23,9 @@ from ..games.crud import get_game
 async def get_decks(session: AsyncSession, filters: Filter) -> list[Deck]:
     query = select(Deck).order_by(Deck.id)
     query = filters.filter(query)
-    query = filters.sort(query)
-
-    print("dddddddddddddd", query)
-    return (await session.scalars(filtered_query)).all()
+    if hasattr(filters, "order_by"):
+        query = filters.sort(query)
+    return (await session.scalars(query)).all()
 
 
 async def get_deck(session: AsyncSession, deck_id: int) -> Deck | None:
