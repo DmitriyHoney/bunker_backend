@@ -1,9 +1,11 @@
-from fastapi import APIRouter, status, Depends, Request
+from fastapi import APIRouter, status, Depends, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import exceptions
 from core.models import db_helper, Card, Move
 from core.models.dependencies import DbSession
+from ws import manager
+from ws.dependencies import wsManager
 from . import crud
 from .dependencies import get_move_by_id
 from .filters import MoveFilterDepends
@@ -20,8 +22,12 @@ router = APIRouter(prefix="/moves", tags=["Moves"])
 @router.get("/", response_model=list[MoveResponse])
 async def get_moves(
         filters: MoveFilterDepends,
+        ws_manager: wsManager,
+        background_tasks: BackgroundTasks,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+
+    background_tasks.add_task(ws_manager.broadcast, "ddddd", ws_manager.get_group_by_name('user_1'))
     return await crud.get_moves(session=session, filters=filters)
 
 
@@ -46,17 +52,23 @@ async def make_move(
     session: DbSession,
     auth: Auth,
     request: Request,
+    ws_manager: wsManager,
+    background_tasks: BackgroundTasks,
     move: Move = Depends(get_move_by_id),
     card: Card = Depends(get_card_by_id),
-):
 
-    print(move)
+):
+    #ws_manager.get_group_by_name()
+    print(ws_manager.active_connections)
     print(card)
 
     ("ddddddddddddd", auth)
     if request.user and not move.user == request.user:
         exceptions.APIException(detail=f"Ход не может сделать игрок {request.user.id}")
-    return await make_move_card(session=session, move=move, card=card, user=request.user)
+
+    move = await make_move_card(session=session, move=move, card=card, user=request.user)
+    background_tasks.add_task()
+    return move
 
 
 @router.get("/{move_id}/", response_model=MoveResponse)

@@ -51,9 +51,4 @@ class ConnectionManager:
             await connection.send_text(message)
 
 
-    async def broadcast(self, message: str, group: Group):
-        for connection in group.members:
-            await connection.send_text(message)
-
-
 manager = ConnectionManager()
