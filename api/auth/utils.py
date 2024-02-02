@@ -94,7 +94,6 @@ async def get_auth_user(
 
 ) -> AuthData:
     user_id = auth_data.payload and auth_data.payload.get("sub")
-
     auth_user: UserAnonimous = await user_crud.get_user(session=session, user_id=user_id)
     if not auth_user:
         raise exceptions.APIException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
