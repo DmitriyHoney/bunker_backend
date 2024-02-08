@@ -46,7 +46,6 @@ async def get_auth_user(
 @router.websocket("/{room_id}/{user_id}")
 async def websocket_endpoint(
         websocket: WebSocket,
-        room_id: int,
         user_id: int,
         current_user: Annotated[str, Depends(get_auth_user)]
 ):
@@ -57,8 +56,6 @@ async def websocket_endpoint(
 
     manager.group_add(group_name=f"room_{play_game[0].id}", websocket=websocket)
     manager.group_add(group_name=f"user_{current_user.id}", websocket=websocket)
-
-    print(manager.active_connections)
 
     await manager.connect(websocket)
     try:

@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import Path, Depends, HTTPException, status
+from fastapi import Path, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper, Round
+from core import exceptions
+from core.models import db_helper, Game
 
 from . import crud
 
@@ -17,15 +18,15 @@ async def rounds_filters(
 RoundsFilterParams = Annotated[dict, Depends(rounds_filters)]
 
 
-async def get_round_by_id(
-    round_id: Annotated[int, Path],
+async def get_poll_by_id(
+    poll_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-) -> Round:
-    round = await crud.get_round(session=session, round_id=round_id)
-    if round is not None:
-        return round
+) -> Game:
+    poll = await crud.get_poll(session=session, poll_id=poll_id)
+    if poll is not None:
+        return poll
 
-    raise HTTPException(
+    raise exceptions.APIException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Round {round_id} not found!",
+        detail=f"Poll {poll_id} not found!",
     )

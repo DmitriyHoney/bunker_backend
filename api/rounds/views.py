@@ -1,15 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, status, Depends, Body
+from fastapi import APIRouter, status, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 from . import crud
-from .dependencies import get_game_by_id, RoundsFilterParams
+from .dependencies import get_round_by_id
 from .filters import RoundFilterDepends
-
 from .schemas import Round, RoundCreate, RoundUpdate, RoundUpdatePartial
-from ..rooms.dependencies import get_room_by_id
 
 router = APIRouter(prefix="/rounds", tags=["Rounds"])
 
@@ -34,10 +32,10 @@ async def create_rounds(
     return await crud.create_rounds(session=session, game_id=round_create.game_id)
 
 
-@router.put("/{game_id}/")
-async def update_game(
+@router.put("/{round_id}/")
+async def update_round(
     game_update: RoundUpdate,
-    game: Round = Depends(get_game_by_id),
+    game: Round = Depends(get_round_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await crud.update_game(
@@ -47,13 +45,13 @@ async def update_game(
     )
 
 
-@router.patch("/{game_id}/")
-async def update_room_partial(
+@router.patch("/{round_id}/")
+async def update_round_partial(
     game_update: RoundUpdatePartial,
-    game: Round = Depends(get_game_by_id),
+    game: Round = Depends(get_round_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.update_room(
+    return await crud.update_game(
         session=session,
         game=game,
         game_update=game_update,
@@ -61,9 +59,9 @@ async def update_room_partial(
     )
 
 
-@router.delete("/{game_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_game(
-    game: Round = Depends(get_game_by_id),
+@router.delete("/{round_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_round(
+    game: Round = Depends(get_round_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> None:
     await crud.delete_game(session=session, game=game)

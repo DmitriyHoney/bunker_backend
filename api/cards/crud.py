@@ -71,6 +71,7 @@ async def update_card(
     await session.commit()
     return card
 
+
 async def delete_card(
         session: AsyncSession,
         card: Card,
