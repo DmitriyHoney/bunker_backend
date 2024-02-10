@@ -6,3 +6,5 @@ sqlalchemy
 asyncpg
 jwt
 alembic
+python-dotenv
+psycopg2

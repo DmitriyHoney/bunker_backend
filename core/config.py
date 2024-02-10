@@ -1,6 +1,9 @@
 from pathlib import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 BASE_DIR = Path(__file__).parent.parent
 
@@ -8,7 +11,7 @@ print(BASE_DIR)
 
 
 class DbSettings(BaseModel):
-    url: str = "postgresql+asyncpg://postgres:123@localhost/bunker"
+    url: str = f"postgresql+asyncpg://{os.getenv("POSTGRES_USER", 'test')}:{os.getenv("POSTGRES_PASSWORD", '1234')}@{os.getenv("POSTGRES_HOST", 'localhost')}/{os.getenv("POSTGRES_DB", 'bunker')}"
     echo: bool = False
 
 
