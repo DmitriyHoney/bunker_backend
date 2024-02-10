@@ -9,7 +9,7 @@ from .dependencies import get_round_by_id
 from .filters import RoundFilterDepends
 from .schemas import Round, RoundCreate, RoundUpdate, RoundUpdatePartial
 
-router = APIRouter(prefix="/rounds", tags=["Rounds"])
+router = APIRouter(prefix="/api/v1/rounds", tags=["Rounds"])
 
 
 @router.get("/", response_model=list[Round])

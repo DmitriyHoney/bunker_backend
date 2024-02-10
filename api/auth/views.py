@@ -9,7 +9,7 @@ from .schemas import Token
 from .utils import encode_jwt
 
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="/api/v1/auth", tags=["Auth"])
 
 
 @router.get("token/test/", response_model=Token)

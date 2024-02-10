@@ -10,7 +10,7 @@ from api.auth.schemas import Token
 from api.auth.utils import encode_jwt, http_bearer
 from ..auth.dependencies import Auth
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 
 
 @router.get("/", response_model=list[User])

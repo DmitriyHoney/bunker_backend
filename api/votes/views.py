@@ -10,7 +10,7 @@ from .filters import PollFilterDepends
 from .schemas import Poll, PollCreate, PollUpdate, PollUpdatePartial
 from ..rounds.dependencies import get_round_by_id
 
-router = APIRouter(prefix="/polls", tags=["Polls"])
+router = APIRouter(prefix="/api/v1/polls", tags=["Polls"])
 
 
 @router.get("/", response_model=list[Poll])

@@ -10,7 +10,7 @@ from .filters import RoomFilterDepends
 from .schemas import Room, RoomCreate, RoomUpdate, RoomUpdatePartial
 
 
-router = APIRouter(prefix="/rooms", tags=["Rooms"])
+router = APIRouter(prefix="/api/v1/rooms", tags=["Rooms"])
 
 
 @router.get("/", response_model=list[Room])

@@ -13,7 +13,7 @@ from .dependencies import get_deck_by_id, get_deck_by_room_id, DeckFilterDepends
 from .filters import DeckFilter
 from .schemas import Deck, DeckCreate, DeckUpdate, DeckUpdatePartial
 
-router = APIRouter(prefix="/decks", tags=["Decks"])
+router = APIRouter(prefix="/api/v1/decks", tags=["Decks"])
 
 
 @router.get("/", response_model=list[Deck])

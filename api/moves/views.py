@@ -16,7 +16,7 @@ from ..auth.dependencies import Auth
 from ..cards.dependencies import get_card_by_id
 
 
-router = APIRouter(prefix="/moves", tags=["Moves"])
+router = APIRouter(prefix="/api/v1/moves", tags=["Moves"])
 
 
 @router.get("/", response_model=list[MoveResponse])

@@ -9,7 +9,7 @@ from .filters import CardFilterDepends
 from .schemas import Card, CardCreate, CardUpdate, CardUpdatePartial, CardSet
 from ..moves.dependencies import get_move_by_id
 
-router = APIRouter(prefix="/cards", tags=["Cards"])
+router = APIRouter(prefix="/api/v1/cards", tags=["Cards"])
 
 
 @router.get("/", response_model=list[Card])

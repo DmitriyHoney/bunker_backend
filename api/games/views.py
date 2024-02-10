@@ -10,7 +10,7 @@ from .filters import GameFilterDepends
 
 from .schemas import Game, GameCreate, GameUpdate, GameUpdatePartial
 
-router = APIRouter(prefix="/games", tags=["Games"])
+router = APIRouter(prefix="/api/v1/games", tags=["Games"])
 
 
 @router.get("/", response_model=list[Game])
