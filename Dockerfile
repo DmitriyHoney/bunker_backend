@@ -13,9 +13,10 @@ RUN pip install --no-cache-dir --upgrade pip setuptools
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install poetry
+COPY poetry.lock .
+COPY pyproject.toml .
 COPY . .
-
-# RUN poetry install
 
 RUN chmod +x entrypoint.sh
 CMD ["/bin/bash", "./entrypoint.sh"]
