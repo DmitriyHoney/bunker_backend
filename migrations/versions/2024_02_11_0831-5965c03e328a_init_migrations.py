@@ -1,8 +1,8 @@
-"""add init
+"""init migrations
 
-Revision ID: c4a1e096a205
+Revision ID: 5965c03e328a
 Revises: 
-Create Date: 2024-01-16 10:38:29.008333
+Create Date: 2024-02-11 08:31:22.731494
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c4a1e096a205'
+revision: str = '5965c03e328a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,6 +29,7 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_table('rooms',
@@ -38,6 +39,7 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('uid')
     )
@@ -53,6 +55,7 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['card_id'], ['cards.id'], ),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_table('games',
@@ -62,8 +65,9 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], ),
+    sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_table('users',
@@ -76,8 +80,8 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('uid'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('id'),
+    sa.UniqueConstraint('uid')
     )
     op.create_table('decks',
     sa.Column('game_id', sa.Integer(), nullable=False),
@@ -85,19 +89,22 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['game_id'], ['games.id'], ),
+    sa.ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_table('rounds',
     sa.Column('name', sa.String(length=32), nullable=False),
     sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('state', sa.Enum('waiting', 'playing', 'played', name='roundstateenum'), nullable=False),
+    sa.Column('number', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('id')
     )
     op.create_table('card_deck',
     sa.Column('card_id', sa.Integer(), nullable=False),
@@ -107,27 +114,32 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['card_id'], ['cards.id'], ),
     sa.ForeignKeyConstraint(['deck_id'], ['decks.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_table('moves',
     sa.Column('round_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('card_id', sa.Integer(), nullable=False),
+    sa.Column('card_id', sa.Integer(), nullable=True),
+    sa.Column('expired_date', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['card_id'], ['cards.id'], ),
     sa.ForeignKeyConstraint(['round_id'], ['rounds.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_table('polls',
     sa.Column('round_id', sa.Integer(), nullable=False),
+    sa.Column('status', sa.Enum('open', 'close', name='pollstatusenum'), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['round_id'], ['rounds.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_table('votes',
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -139,7 +151,8 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['exclude_user_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['poll_id'], ['polls.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     # ### end Alembic commands ###
 

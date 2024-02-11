@@ -1,0 +1,2 @@
+cd ./certs
+./generate.sh

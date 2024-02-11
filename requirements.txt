@@ -4,7 +4,7 @@ uvicorn
 pydantic_settings
 sqlalchemy
 asyncpg
-jwt
+PyJWT
 alembic
 python-dotenv
 psycopg2
