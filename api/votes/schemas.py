@@ -7,49 +7,49 @@ from fastapi import Query
 from pydantic import BaseModel, ConfigDict
 
 from core.models import RoundStateEnum, GameStatusEnum
+from core.models.poll import PollStatusEnum
 
 
-class PollsFilterModel(BaseModel):
+class VotesFilterModel(BaseModel):
     pass
 
 
-class PollBase(BaseModel):
+class VoteBase(BaseModel):
     pass
     #status: str
 
 
-class PollCreate(PollBase):
-    round_id: int
+class VoteCreate(VoteBase):
+    user_id: int
+    poll_id: int
+    exclude_user_id: int
 
 
-class PollUpdate(PollCreate):
+class VoteUpdate(VoteCreate):
     pass
 
 
-class PollUpdatePartial(PollCreate):
+class VoteUpdatePartial(VoteCreate):
     pass
 
 
-class PollVotesUser(BaseModel):
+class VoteUser(BaseModel):
     id: int
     username: str
 
-
-class PollVotes(BaseModel):
+class VotePollRound(BaseModel):
     id: int
-    user: PollVotesUser
-    exclude_user: PollVotesUser
 
 
-class PollRound(BaseModel):
-    name: str
-    game_id: int
-    state: RoundStateEnum
-    number: int
+class VotePoll(BaseModel):
+    id: int
+    status: PollStatusEnum
+    round: VotePollRound
 
 
-class Poll(PollBase):
+class Vote(VoteBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    round: PollRound
-    votes: list[PollVotes]
+    poll: VotePoll
+    user: VoteUser
+    exclude_user: VoteUser

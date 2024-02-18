@@ -1,11 +1,10 @@
-from typing import Optional, Annotated, List
+from typing import Optional, Annotated
 
 from fastapi.params import Query
-from pydantic import Field
 
 from core.filters import Filter
 from core.filters.base_filter import FilterDepends
-from core.models import Deck, Game, GameStatusEnum
+from core.models import Game, GameStatusEnum
 
 
 class GameFilter(Filter):

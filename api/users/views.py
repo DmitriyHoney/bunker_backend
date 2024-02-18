@@ -17,10 +17,10 @@ router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 async def get_users(
     filters: UserFilterDepends,
     request: Request,
-    auth: Auth,
+    #auth: Auth,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    print(auth)
+    #print(auth)
     return await crud.get_users(session=session, filters=filters)
 
 

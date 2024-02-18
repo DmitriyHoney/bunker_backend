@@ -1,4 +1,5 @@
 from fastapi import APIRouter, status, Depends
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper, CardCategoryEnum, Move
@@ -12,7 +13,7 @@ from ..moves.dependencies import get_move_by_id
 router = APIRouter(prefix="/api/v1/cards", tags=["Cards"])
 
 
-@router.get("/", response_model=list[Card])
+@router.get("/", response_model=Page[Card])
 async def get_cards(
         filters: CardFilterDepends,
         session: AsyncSession = Depends(db_helper.scoped_session_dependency),

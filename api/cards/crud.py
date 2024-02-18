@@ -6,6 +6,7 @@ Delete
 """
 from random import random
 
+from fastapi_pagination import Page, paginate
 from sqlalchemy import select, func
 from sqlalchemy.engine import Result, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,15 +18,15 @@ from core.models.card import card_user_categories
 from .schemas import CardCreate, CardUpdate, CardUpdatePartial, CardSet
 
 
-async def get_cards(session: AsyncSession, filters: Filter) -> list[Card]:
+async def get_cards(session: AsyncSession, filters: Filter) -> Page[Card]:
     query = select(Card).order_by(Card.id)
     query = filters.filter(query)
     if hasattr(query, 'order_by'):
         query = filters.sort(query)
-
-    result: Result = await session.execute(query)
-    products = result.scalars().all()
-    return list(products)
+    return paginate(session, query)
+    # result: Result = await session.execute(query)
+    # products = result.scalars().all()
+    # return list(products)
 
 
 async def get_card(session: AsyncSession, card_id: int) -> Card | None:

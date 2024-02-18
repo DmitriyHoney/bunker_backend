@@ -3,6 +3,7 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi import status
 from fastapi.middleware import Middleware
+from fastapi_pagination import add_pagination
 from starlette.middleware.authentication import AuthenticationMiddleware
 
 from api.cards.views import router as cards_router
@@ -20,9 +21,13 @@ from api.decks.views import router as decks_router
 from api.moves.views import router as moves_router
 from api.rounds.views import router as rounds_router
 from api.polls.views import router as polls_router
+from api.votes.views import router as votes_router
 
 
 app = FastAPI(middleware=[Middleware(CustomHeaderMiddleware)])
+
+add_pagination(app)
+
 app.include_router(auth_router)
 app.include_router(rooms_router)
 app.include_router(users_router)
@@ -32,6 +37,7 @@ app.include_router(moves_router)
 app.include_router(cards_router)
 app.include_router(rounds_router)
 app.include_router(polls_router)
+app.include_router(votes_router)
 
 app.include_router(ws_router)
 
@@ -48,10 +54,10 @@ def api_exceptions_handler(request: Request, exc: APIException):
         })
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     while True:
+#         data = await websocket.receive_text()
+#         await websocket.send_text(f"Message text was: {data}")
 

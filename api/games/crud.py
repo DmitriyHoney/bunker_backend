@@ -5,7 +5,7 @@ Update
 Delete
 """
 
-from sqlalchemy import select, exists
+from sqlalchemy import select, exists, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import exceptions
@@ -25,6 +25,13 @@ async def get_games(session: AsyncSession, user_id: int | None) -> list[Game]:
 
 async def get_game(session: AsyncSession, game_id: int) -> Game | None:
     return await session.get(Game, game_id)
+
+
+async def get_game_by_room_id(session: AsyncSession, room_id: int) -> Game | None:
+
+    query = select(Game).join(Game.room).where(Room.id == room_id, Game.status == GameStatusEnum.playing)
+    result: Result = await session.execute(query)
+    return result.scalar()
 
 
 async def create_game(session: AsyncSession, game_in: GameCreate) -> Game:

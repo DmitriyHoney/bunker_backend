@@ -30,3 +30,21 @@ async def get_user_by_id(
             detail="Пользователь должен быть создателем комнаты",
         )
     return user
+
+
+async def get_game_by_room_id(
+        room_id: Annotated[int, Body],
+        session: DbSession,
+) -> User:
+    user = await user_crud.get_user(session=session, room_id=room_id)
+
+    if user is None:
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User {user_id} not found!",
+        )
+    if not user.is_owner:
+        raise APIException(
+            detail="Пользователь должен быть создателем комнаты",
+        )
+    return user

@@ -19,6 +19,7 @@ websockets = "^12.0"
 pyjwt = {extras = ["crypto"], version = "^2.8.0"}
 python-multipart = "^0.0.6"
 fastapi-filter = "^1.1.0"
+fastapi-pagination = "^0.12.14"
 
 
 [tool.poetry.group.dev.dependencies]

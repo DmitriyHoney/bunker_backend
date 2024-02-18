@@ -2,64 +2,63 @@ from typing import Annotated
 
 from fastapi import APIRouter, status, Depends, Body
 
-from core.models import Round
 from core.models.dependencies import DbSession
 from . import crud
-from .dependencies import get_poll_by_id
-from .filters import PollFilterDepends
-from .schemas import Poll, PollCreate, PollUpdate, PollUpdatePartial
-from ..rounds.dependencies import get_round_by_id
-
-router = APIRouter(prefix="/api/v1/polls", tags=["Polls"])
+from .dependencies import get_vote_by_id
+from .filters import VoteFilterDepends
+from .schemas import Vote, VoteCreate, VoteUpdate, VoteUpdatePartial
 
 
-@router.get("/", response_model=list[Poll])
-async def get_polls(
+router = APIRouter(prefix="/api/v1/votes", tags=["Votes"])
+
+
+@router.get("/", response_model=list[Vote])
+async def get_votes(
     session: DbSession,
-    filters: PollFilterDepends,
+    filters: VoteFilterDepends,
 ):
-    return await crud.get_polls(session=session, filters=filters)
+    return await crud.get_votes(session=session, filters=filters)
 
 
-@router.post("/", response_model=Poll, status_code=status.HTTP_201_CREATED)
-async def create_poll(
+@router.post("/", response_model=Vote, status_code=status.HTTP_201_CREATED)
+async def create_vote(
     session: DbSession,
-    poll_create: Annotated[PollCreate, Body],
+    poll_create: Annotated[VoteCreate, Body],
 ):
     return await crud.create_poll(session=session, poll_in=poll_create)
 
 
-@router.put("/{poll_id}/")
-async def update_poll(
+@router.put("/{vote_id}/")
+async def update_vote(
     session: DbSession,
-    poll_update: PollUpdate,
-    poll: Poll = Depends(get_poll_by_id),
+    vote_update: VoteUpdate,
+    vote: Vote = Depends(get_vote_by_id),
 
 ):
-    return await crud.update_poll(
+    return await crud.update_vote(
         session=session,
-        poll=poll,
-        poll_update=poll_update,
+        vote=vote,
+        vote_update=vote_update,
     )
 
 
-@router.patch("/{poll_id}/")
-async def update_room_partial(
+@router.patch("/{vote_id}/")
+async def update_vote_partial(
     session: DbSession,
-    game_update: PollUpdatePartial,
-    poll: Poll = Depends(get_poll_by_id),
+    vote_update: VoteUpdatePartial,
+    vote: Vote = Depends(get_vote_by_id),
 
 ):
-    return await crud.update_poll(
+    return await crud.update_vote(
         session=session,
-        poll=poll,
-        poll_update=game_update,
+        vote=vote,
+        vote_update=vote_update,
         partial=True,
     )
 
-@router.delete("/{poll_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_poll(
+@router.delete("/{vote_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_vote(
         session: DbSession,
-        poll: Poll = Depends(get_poll_by_id),
+        vote: Vote = Depends(get_vote_by_id),
 ) -> None:
-    await crud.delete_poll(session=session, poll=poll)
+    await crud.delete_vote(session=session, vote=vote)

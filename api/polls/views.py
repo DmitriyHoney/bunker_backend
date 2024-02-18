@@ -46,14 +46,14 @@ async def update_poll(
 @router.patch("/{poll_id}/")
 async def update_room_partial(
     session: DbSession,
-    game_update: PollUpdatePartial,
+    poll_update: PollUpdatePartial,
     poll: Poll = Depends(get_poll_by_id),
 
 ):
     return await crud.update_poll(
         session=session,
         poll=poll,
-        poll_update=game_update,
+        poll_update=poll_update,
         partial=True,
     )
 

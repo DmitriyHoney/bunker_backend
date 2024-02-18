@@ -4,17 +4,19 @@ from fastapi.params import Query
 
 from core.filters import Filter
 from core.filters.base_filter import FilterDepends
-from core.models import Round
+from core.models import Round, Vote
 
 
-class PollFilter(Filter):
-    round_id: Annotated[Optional[int], Query(alias="game_id")] = None
+class VoteFilter(Filter):
+    user_id: Annotated[Optional[int], Query(alias="user_id")] = None
+    exclude_user_id: Annotated[Optional[int], Query(alias="exclude_user_id")] = None
+    poll_id: Annotated[Optional[int], Query(alias="poll_id")] = None
 
     class Constants(Filter.Constants):
-        model = Round
+        model = Vote
 
     class Config:
         populate_by_name = True
 
 
-PollFilterDepends = Annotated[PollFilter, FilterDepends(PollFilter)]
+VoteFilterDepends = Annotated[VoteFilter, FilterDepends(VoteFilter)]

@@ -18,15 +18,15 @@ async def rounds_filters(
 RoundsFilterParams = Annotated[dict, Depends(rounds_filters)]
 
 
-async def get_poll_by_id(
-    poll_id: Annotated[int, Path],
+async def get_vote_by_id(
+    vote_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Game:
-    poll = await crud.get_poll(session=session, poll_id=poll_id)
-    if poll is not None:
-        return poll
+    vote = await crud.get_vote(session=session, vote_id=vote_id)
+    if vote is not None:
+        return vote
 
     raise exceptions.APIException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Poll {poll_id} not found!",
+        detail=f"Vote {vote_id} not found!",
     )

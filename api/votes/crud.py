@@ -14,13 +14,13 @@ from starlette import status
 from core import exceptions
 from core.exceptions import APIException
 from core.filters import Filter
-from core.models import Game, Round, RoundStateEnum, Move, Poll
-from .schemas import PollUpdate, PollUpdatePartial, PollCreate
+from core.models import Game, Round, RoundStateEnum, Move, Vote
+from .schemas import VoteUpdate, VoteUpdatePartial, VoteCreate
 
-Model = Poll
+Model = Vote
 
 
-async def get_polls(session: AsyncSession, filters: Filter) -> list[Model]:
+async def get_votes(session: AsyncSession, filters: Filter) -> list[Model]:
     query = select(Model).order_by(Model.id)
     query = filters.filter(query)
     if hasattr(filters, 'order_by'):
@@ -29,18 +29,18 @@ async def get_polls(session: AsyncSession, filters: Filter) -> list[Model]:
     return result.scalars().all()
 
 
-async def get_poll(session: AsyncSession, poll_id: int) -> Model | None:
-    query = select(Model).where(Model.id == poll_id)
+async def get_vote(session: AsyncSession, vote_id: int) -> Model | None:
+    query = select(Model).where(Model.id == vote_id)
     result = await session.scalar(query)
     if not result:
         raise exceptions.APIException(status_code=status.HTTP_404_NOT_FOUND)
     return result
 
 
-async def create_poll(session: AsyncSession, poll_in: PollCreate) -> Model:
+async def create_vote(session: AsyncSession, vote_in: VoteCreate) -> Model:
 
-    poll = Model(**poll_in.model_dump())
-    session.add(poll)
+    vote = Model(**vote_in.model_dump())
+    session.add(vote)
 
     # await session.flush()
     # await session.refresh(game)
@@ -61,27 +61,27 @@ async def create_poll(session: AsyncSession, poll_in: PollCreate) -> Model:
     #     round = Round(name=f"round_{i + 1}")
 
     await session.commit()
-    await session.refresh(poll)
-    return poll
+    await session.refresh(vote)
+    return vote
 
 
-async def update_poll(
+async def update_vote(
     session: AsyncSession,
-    poll: Model,
-    poll_update: PollUpdate | PollUpdatePartial,
+    vote: Model,
+    vote_update: VoteUpdate | VoteUpdatePartial,
     partial: bool = False,
 ) -> Model:
-    for name, value in poll_update.model_dump(exclude_unset=partial).items():
-        setattr(poll, name, value)
+    for name, value in vote_update.model_dump(exclude_unset=partial).items():
+        setattr(vote, name, value)
     await session.commit()
-    return poll
+    return vote
 
 
-async def delete_poll(
+async def delete_vote(
     session: AsyncSession,
-    poll: Model,
+    vote: Model,
 ) -> None:
-    await session.delete(poll)
+    await session.delete(vote)
     await session.commit()
 
 

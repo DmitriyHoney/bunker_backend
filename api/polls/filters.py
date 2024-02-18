@@ -8,7 +8,7 @@ from core.models import Round
 
 
 class PollFilter(Filter):
-    round_id: Annotated[Optional[int], Query(alias="game_id")] = None
+    round_id: Annotated[Optional[int], Query(alias="round_id")] = None
 
     class Constants(Filter.Constants):
         model = Round

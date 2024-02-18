@@ -18,7 +18,7 @@ async def get_test_token(
 ):
 
     jwt_payload = {
-        "sub": 3,
+        "sub": 1,
         "game": "1"
     }
 
