@@ -2,7 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, status, Depends, Body
 
-from core.models import Round
+from core import exceptions
+from core.models import Round, RoundStateEnum
 from core.models.dependencies import DbSession
 from . import crud
 from .dependencies import get_poll_by_id
@@ -26,6 +27,11 @@ async def create_poll(
     session: DbSession,
     poll_create: Annotated[PollCreate, Body],
 ):
+    game_round = await get_round_by_id(poll_create.round_id)
+
+    if game_round and game_round.state != RoundStateEnum.playing:
+        raise exceptions.APIException(detail=f"Раунд не играется")
+
     return await crud.create_poll(session=session, poll_in=poll_create)
 
 
