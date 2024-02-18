@@ -26,6 +26,9 @@ async def get_rounds(session: AsyncSession, filters: Filter) -> list[Game]:
     return result.scalars().all()
 
 
+async def get_round(session: AsyncSession, round_id: int) -> Round | None:
+    return await session.get(Round, round_id)
+
 async def get_game(session: AsyncSession, game_id: int) -> Game | None:
     return await session.get(Game, game_id)
 

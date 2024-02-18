@@ -39,5 +39,5 @@ async def get_deck_by_room_id(
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f" {deck_id} not found!",
+        detail=f" {game_id} not found!",
     )

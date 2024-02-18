@@ -4,6 +4,7 @@ from fastapi import Path, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper, Round
+from core.models.dependencies import DbSession
 
 from . import crud
 
@@ -19,7 +20,7 @@ RoundsFilterParams = Annotated[dict, Depends(rounds_filters)]
 
 async def get_round_by_id(
     round_id: Annotated[int, Path],
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    session: DbSession,
 ) -> Round:
     round = await crud.get_round(session=session, round_id=round_id)
     if round is not None:

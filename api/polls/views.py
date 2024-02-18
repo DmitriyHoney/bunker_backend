@@ -27,7 +27,7 @@ async def create_poll(
     session: DbSession,
     poll_create: Annotated[PollCreate, Body],
 ):
-    game_round = await get_round_by_id(poll_create.round_id)
+    game_round = await get_round_by_id(session=session, round_id=poll_create.round_id)
 
     if game_round and game_round.state != RoundStateEnum.playing:
         raise exceptions.APIException(detail=f"Раунд не играется")

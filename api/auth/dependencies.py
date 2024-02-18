@@ -41,7 +41,7 @@ async def get_game_by_room_id(
     if user is None:
         raise APIException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User {user_id} not found!",
+            detail=f"Room {room_id} not found!",
         )
     if not user.is_owner:
         raise APIException(
