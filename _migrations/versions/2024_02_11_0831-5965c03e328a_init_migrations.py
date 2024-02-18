@@ -1,4 +1,4 @@
-"""init migrations
+"""init _migrations
 
 Revision ID: 5965c03e328a
 Revises: 

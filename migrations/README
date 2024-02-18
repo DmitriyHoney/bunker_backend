@@ -1,3 +1,4 @@
 Generic single-database configuration with an async dbapi.
+alembic init -t async migrations
 alembic revision --autogenerate -m "add user"
 alembic upgrade head

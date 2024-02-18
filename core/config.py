@@ -11,7 +11,7 @@ print(BASE_DIR)
 
 
 class DbSettings(BaseModel):
-    url: str = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER', 'test')}:{os.getenv('POSTGRES_PASSWORD', '1234')}@{os.getenv('POSTGRES_HOST', 'localhost')}/{os.getenv('POSTGRES_DB', 'bunker')}"
+    url: str = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER', 'postgres')}:{os.getenv('POSTGRES_PASSWORD', '123')}@{os.getenv('POSTGRES_HOST', 'localhost')}/{os.getenv('POSTGRES_DB', 'bunker')}"
     echo: bool = False
 
 
@@ -31,7 +31,6 @@ class GameSettings(BaseModel):
 
 class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
-
     db: DbSettings = DbSettings()
     auth_jwt: AuthJWT = AuthJWT()
     game: GameSettings = GameSettings()
